@@ -1,23 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import codecs
-from datetime import datetime
-from datetime import time
-from icalendar import Calendar
-import locale
-import pytz
-from pytz import utc
-import requests
-import getpass
+# Autheur: Matthieu Riou <adresse mail>
+# Version: v0.1
+# Versions de python supportées:
 
-#Pour choisir les groupes, aller remplir la fonction à la toute fin du programme
+import codecs # support des encodages
+from datetime import datetime # time manipulation functions
+from datetime import time 
+from icalendar import Calendar # support des .ics
+import locale # support of local locale (oh really ?), and internationalization
+import pytz # accurate timezone calculations
+from pytz import utc
+import requests # permet de réaliser simplement (plus qu'avec urllib2) des
+# requêtes HTTP
+import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
+# demander un mot de passe
+
+# Pour choisir les groupes, aller remplir la fonction à la toute fin du programme
 
 
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
 
-login = ""
-mdp = ""
+login = "e134894z"
+mdp = "KOMETHES23"
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
 
 
@@ -25,7 +31,7 @@ def order(group):
 	request = connect(group)
 	paris = pytz.timezone('Europe/Paris')
 	format = "%Y%m%dT%H%M%SZ"
-	datefind = datetime(2014, 03, 28, 13)
+	datefind = datetime(2014, 04, 16, 11)
 	find = datefind.strftime("%d/%m/%Y/%Hh%M")
 	ffind = utc.localize(datefind)
 	fffind = ffind.astimezone(paris)
@@ -87,7 +93,7 @@ def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
 def intersect(start1, end1, start2, end2):
 	return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
 	
-def ics(group):
+def ics(group): # fonction ancienne
 	request = connect(group)
 	
 	print request.text
@@ -158,14 +164,16 @@ def affiche_cours(start, end, description):
 		
 	return result
 	
-def etbit(x, y):
+def etbit(x, y): # comparaison logique d'indices de deux horaires
+        # identique de deux groupes différents
 	return x & y
 	
-def compare_local(crenaux1, crenaux2):	
+def compare_local(crenaux1, crenaux2): 
 	result = map(etbit, crenaux1, crenaux2)
 	return result
 	
-def affiche_result(x):
+def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
+        # à 912, on affiche les semaine, jour et horaire de l'indice.
 	semaine = x / 48
 	jour = (x - semaine*48) / 8
 	horaire = x - semaine*48 - jour*8
@@ -176,7 +184,7 @@ def affiche_result(x):
 		print "Semaine {} jour {} horaire {}".format(semaine+4, jour+1, heure)
 
 
-def compare(liste_crenaux):
+def compare(liste_crenaux): 
 	if len(liste_crenaux) == 1:
 		for x in range(len(liste_crenaux[0])):
 			if liste_crenaux[0][x] == 1:
