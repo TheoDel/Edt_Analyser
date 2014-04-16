@@ -174,7 +174,12 @@ def correspondance_group(group):
 	return correspondance_group_tab[group]
 
 
-compare(ordergroup(map(correspondance_group, ["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402", "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])))
+def main(tableauGroupe):
+	edtParGroupe = ordergroup(map(correspondance_group, tableauGroupe))
+
+	compare(edtParGroupe)
+
+main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402", "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
 raw_input()
 compare(ordergroup(map(correspondance_group, ["L2_401", "L2_419"])))
 raw_input()
