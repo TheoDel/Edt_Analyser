@@ -26,8 +26,7 @@ import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
 
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
 
-login = ""
-mdp = ""
+
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
 
 
@@ -97,54 +96,11 @@ def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
 
 def intersect(start1, end1, start2, end2):
 	return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
-	
-def ics(group): # fonction ancienne
-	request = connect(group)
-	
-	print request.text
-	format = "%Y%m%dT%H%M%SZ"
-	now = datetime.utcnow().strftime(format)
-	paris = pytz.timezone('Europe/Paris')
-	current = '99991231T235959Z'
-	dtstart = dtend = description = ''
-	i = 0
-	for component in Calendar.from_ical(request.text).walk():		
-		if component.name == 'VEVENT':
-			start = component.get('DTSTART').to_ical()
-			end = component.get('DTEND').to_ical()
-			print affiche_cours(start, end, "")
-		
-			current_start = component.get('DTSTART').to_ical()
-			if now > current_start:
-				continue
-			if current_start < current:
-				print i
-				current = current_start
-				description = unicode(component.get('DESCRIPTION'))
-				start = component.get('DTSTART').to_ical()
-				end = component.get('DTEND').to_ical()
-			
-				print start
-				print affiche_cours(start, end, description)
-	dtutcstart = utc.localize(datetime.strptime(start, format))
-	dtutcend = utc.localize(datetime.strptime(end, format))
-	dtstart = dtutcstart.astimezone(paris)
-	dtend = dtutcend.astimezone(paris)
-	result = (u"Prochain cours le {date} de {start} à {end} :\n"
-			  "{description}").format(
-		date=dtstart.strftime("%A %d/%m/%Y"),
-		start=dtstart.strftime("%Hh%M"),
-		end=dtend.strftime("%Hh%M"),
-		description=description).encode('utf8').strip()
-	return result
-
 
 def connect(group):
-	global login, mdp	
 	locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
-	if login == "":
-		login = raw_input("Login : ")
-		mdp = getpass.getpass("Mot de passe : ")
+	login = raw_input("Login : ")
+	mdp = getpass.getpass("Mot de passe : ")
 	request = requests.get(
 		'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
 		auth=(login, mdp))
