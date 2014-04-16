@@ -29,9 +29,13 @@ correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401"
 
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
 
+request = ""
+
 
 def order(group):
-	request = connect(group) # objet reçu de la connexion via la
+	global request
+	if request == "":
+		request = connect(group) # objet reçu de la connexion via la
         # fonction connect définie plus bas.
 	paris = pytz.timezone('Europe/Paris')
 	format = "%Y%m%dT%H%M%SZ"
@@ -168,6 +172,7 @@ def ordergroup(liste_group):
 def correspondance_group(group):
 	global correspondance_group_tab	
 	return correspondance_group_tab[group]
+
 
 compare(ordergroup(map(correspondance_group, ["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402", "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])))
 raw_input()
