@@ -3,13 +3,12 @@
 
 # Autheur: Matthieu Riou <adresse mail>
 # Version: v0.1
-# Versions de python supportées:
-# Dépendances:
+# Versions de python supportées: 2.7
+# Dépendances: icalendar, requests (pip install ; utiliser virtualenvwrapper)
 # Notes: Pour choisir les groupes, aller remplir la fonction à la toute
 # fin du programme.
 # ToDo: Modulariser la fonction appelante à la fin du programme ;
-# Commenter ; Définir les dépendances et les inscrire plus haut ;
-# Développer une interface graphique.
+# Commenter ; Développer une interface graphique.
 
 import codecs # support des encodages
 from datetime import datetime # time manipulation functions
@@ -23,14 +22,9 @@ import requests # permet de réaliser simplement (plus qu'avec urllib2) des
 import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
 # demander un mot de passe
 
-
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
-
-
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
-
 request = ""
-
 
 def order(group):
 	global request
@@ -39,7 +33,8 @@ def order(group):
         # fonction connect définie plus bas.
 	paris = pytz.timezone('Europe/Paris')
 	format = "%Y%m%dT%H%M%SZ"
-	datefind = datetime(2014, 04, 16, 11)
+	datefind = datetime(2014, 4, 16, 11) # careful: 04 is invalid. 4
+        # is. (octal numbers not allowed in python!)
 	find = datefind.strftime("%d/%m/%Y/%Hh%M")
 	ffind = utc.localize(datefind)
 	fffind = ffind.astimezone(paris)
@@ -174,15 +169,14 @@ def correspondance_group(group):
 	return correspondance_group_tab[group]
 
 
-def main(tableauGroupe):
-	edtParGroupe = ordergroup(map(correspondance_group, tableauGroupe))
+def main(tableauGroupe): # raccourci final d'utilisation
+        try:
+                edtParGroupe = ordergroup(map(correspondance_group, tableauGroupe))
+                # grouplist est la liste des groupes, de la forme suivante:
+                # ["L1_245", "L1_247", ...]
+                compare(edtParGroupe)
+        except KeyboardInterrupt, SystemExit:
+                exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
 
-	compare(edtParGroupe)
-
-main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402", "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
-raw_input()
-compare(ordergroup(map(correspondance_group, ["L2_401", "L2_419"])))
-raw_input()
-compare(ordergroup(map(correspondance_group, ["L2_402", "L2_419"])))
-#compare(ordergroup(map(correspondance_group, ["L2_401", "L2_402", "L2_419"])))
-#compare(ordergroup(map(correspondance_group, ["L2_401", "L2_402", "L2_419"])))
+main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
+      "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
