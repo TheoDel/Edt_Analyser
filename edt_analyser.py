@@ -3,7 +3,7 @@
 
 # Autheur: Matthieu Riou <matthieu.riou@etu.univ-nantes.fr>
 # Version: v0.1
-# Versions de python supportées: 2.7
+# Versions de python supportées: 3.x
 # Dépendances: icalendar, requests (pip install ; utiliser virtualenvwrapper)
 # Notes: Pour choisir les groupes, aller remplir la fonction à la toute
 # fin du programme.
@@ -137,8 +137,7 @@ def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
 	heure = horaire_to_heure[horaire]
         
 	if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and (semaine == 13 or semaine == 14):
-		print "Semaine {} jour {} horaire {}".format(semaine+4, jour+1, heure)
-
+		print("Semaine {} jour {} horaire {}".format(semaine+4, jour+1, heure))
 
 def compare(liste_crenaux):
 	if len(liste_crenaux) == 1:
@@ -171,7 +170,7 @@ def main(tableauGroupe): # raccourci final d'utilisation
                 # grouplist est la liste des groupes, de la forme suivante:
                 # ["L1_245", "L1_247", ...]
                 compare(edtParGroupe)
-        except KeyboardInterrupt, SystemExit:
+        except (KeyboardInterrupt, SystemExit):
                 exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
 
 main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
