@@ -4,23 +4,30 @@
 # Autheur: Matthieu Riou <matthieu.riou@etu.univ-nantes.fr>
 # Version: v0.1
 # Versions de python supportées: 3.x
-# Dépendances: icalendar, requests (pip install ; utiliser virtualenvwrapper)
+# Dépendances: icalendar, requests, tkinter
+# (pip install ; utiliser virtualenvwrapper)
 # Notes: Pour choisir les groupes, aller remplir la fonction à la toute
 # fin du programme.
-# ToDo: Modulariser la fonction appelante à la fin du programme ;
-# Commenter ; Développer une interface graphique.
+# ToDo: Développer une interface graphique.
 
-import codecs # support des encodages
-from datetime import datetime # time manipulation functions
-from datetime import time 
-from icalendar import Calendar # support des .ics
-import locale # support of local locale (oh really ?), and internationalization
-import pytz # accurate timezone calculations
-from pytz import utc
-import requests # permet de réaliser simplement (plus qu'avec urllib2) des
-# requêtes HTTP
-import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
-# demander un mot de passe
+try:
+        import codecs # support des encodages
+        from datetime import datetime # time manipulation functions
+        from datetime import time 
+        from icalendar import Calendar # support des .ics
+        import locale # support of local locale (oh really ?), and internationalization
+        import pytz # accurate timezone calculations
+        from pytz import utc
+        import requests # permet de réaliser simplement (plus qu'avec urllib2) des
+        # requêtes HTTP
+        import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
+        # demander un mot de passe
+except ImportError:
+        raise ImportError("Modules are required to run this program. Try `pip install icalendar requests`.")
+try:
+        from tkinter import *
+except ImportError:
+        raise ImportError("Tkinter is needed by this program. Verify you have a working tcl/tk installation.")        
 
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
@@ -172,6 +179,32 @@ def main(tableauGroupe): # raccourci final d'utilisation
                 compare(edtParGroupe)
         except (KeyboardInterrupt, SystemExit):
                 exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
+
+class AppBase():
+	'''Application principale'''
+	def __init__(self):
+		'''constructeur'''
+		self.fen = Tk()
+		self.fen.title('Edt Analyser')
+ 
+		self.bou_action = Button(self.fen)
+		self.bou_action.config(text='Action', command=self.action)
+		self.bou_action.pack()
+ 
+		self.bou_quitter = Button(self.fen)
+		self.bou_quitter.config(text='Quitter', command=self.fen.destroy)
+		self.bou_quitter.pack()
+ 
+	def run(self):
+                self.fen.mainloop()
+ 
+	def action(self):
+		'''Action sur un bouton'''
+		self.lab = Label(self.fen)
+		self.lab.config(text='')
+		self.lab.pack()
+                
+#fenetre = AppBase() # on crée l´objet qui va définir l´interface graphique
 
 main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
