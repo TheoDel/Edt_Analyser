@@ -3,7 +3,7 @@
 
 # Autheur: Matthieu Riou <matthieu.riou@etu.univ-nantes.fr>
 # Version: v0.1
-# Versions de python supportées: 3.x
+# Versions de python supportées: 3.3+
 # Dépendances: icalendar, requests (pip install ; utiliser virtualenvwrapper)
 # Notes: Pour choisir les groupes, aller remplir la fonction à la toute
 # fin du programme.
@@ -113,7 +113,7 @@ def affiche_cours(start, end, description):
 	dtutcend = utc.localize(datetime.strptime(end, format))
 	dtstart = dtutcstart.astimezone(paris)
 	dtend = dtutcend.astimezone(paris)
-	result = (u"Prochain cours le {date} de {start} à {end}").format(
+	result = u"Prochain cours le {date} de {start} à {end}".format(
 		date=dtstart.strftime("%A %d/%m/%Y"),
 		start=dtstart.strftime("%Hh%M"),
 		end=dtend.strftime("%Hh%M"))
