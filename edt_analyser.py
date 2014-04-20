@@ -194,6 +194,32 @@ def main(tableauGroupe): # raccourci final d'utilisation
         except (KeyboardInterrupt, SystemExit):
                 exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
 
+class AppBase():
+        '''Application principale'''
+        def __init__(self):
+                '''constructeur'''
+                self.fen = Tk()
+                self.fen.title('Edt Analyser')
+                
+                self.bou_action = Button(self.fen)
+                self.bou_action.config(text='Action', command=self.action)
+                self.bou_action.pack()
+                
+                self.bou_quitter = Button(self.fen)
+                self.bou_quitter.config(text='Quitter', command=self.fen.destroy)
+                self.bou_quitter.pack()
+                
+        def run(self):
+                self.fen.mainloop()
+
+        def action(self):
+                '''Action sur un bouton'''
+                self.lab = Label(self.fen)
+                self.lab.config(text='')
+                self.lab.pack()
+                
+#fenetre = AppBase() # on crée l´objet qui va définir l´interface graphique
+                
 # main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
 #       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
 main(["L1_245", "M1_Oro"])
