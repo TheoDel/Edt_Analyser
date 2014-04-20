@@ -23,10 +23,7 @@ try:
         # demander un mot de passe
 except ImportError:
         raise ImportError("Modules are required to run this program. Try `pip install icalendar requests`.")
-try:
-        from tkinter import *
-except ImportError:
-        raise ImportError("Tkinter is needed by this program. Verify you have a working tcl/tk installation.")        
+        exit
 
 # VARIABLE GLOBALES
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
@@ -44,14 +41,10 @@ def connect(group):
         if 'mdp' not in globals():
                 global mdp
                 mdp = getpass.getpass("Mot de passe : ")
-        # global login, mdp
-        # if login == "":
-        #         login = input("Login : ")
-        # if mdp == "":
-        #         mdp = getpass.getpass("Mot de passe : ")
         request = requests.get(
                         'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
-                        auth=(login, mdp))
+                        auth=(login, mdp),
+                        timeout=2)
         if not 200 <= request.status_code < 300:
                 print("Error status while retrieving the ics file.")
                 exit
@@ -95,32 +88,32 @@ def order(group):
         return crenaux
 
 def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
-	
-	isodate = start.isocalendar() #tuple (annee, semaine, jour de 1 a 7)
-	
-	index = (isodate[1]-4) * 48
-	index = index + (isodate[2]-1) * 8
-	
-	if intersect(time(8), time(9, 20), start.time(), end.time()):
-		crenaux[index + 0] = 0
         
-	if intersect(time(9, 30), time(10, 50), start.time(), end.time()):
-		crenaux[index + 1] = 0
+        isodate = start.isocalendar() #tuple (annee, semaine, jour de 1 a 7)
         
-	if intersect(time(11), time(12, 20), start.time(), end.time()):
-		crenaux[index + 2] = 0
+        index = (isodate[1]-4) * 48
+        index = index + (isodate[2]-1) * 8
         
-	if intersect(time(12, 30), time(13, 50), start.time(), end.time()):
-		crenaux[index + 3] = 0
+        if intersect(time(8), time(9, 20), start.time(), end.time()):
+                crenaux[index + 0] = 0
         
-	if intersect(time(14), time(15, 20), start.time(), end.time()):
-		crenaux[index + 4] = 0
+        if intersect(time(9, 30), time(10, 50), start.time(), end.time()):
+                crenaux[index + 1] = 0
         
-	if intersect(time(15, 30), time(16, 50), start.time(), end.time()):
-		crenaux[index + 5] = 0
+        if intersect(time(11), time(12, 20), start.time(), end.time()):
+                crenaux[index + 2] = 0
         
-	if intersect(time(17), time(18, 20), start.time(), end.time()):
-		crenaux[index + 6] = 0
+        if intersect(time(12, 30), time(13, 50), start.time(), end.time()):
+                crenaux[index + 3] = 0
+        
+        if intersect(time(14), time(15, 20), start.time(), end.time()):
+                crenaux[index + 4] = 0
+        
+        if intersect(time(15, 30), time(16, 50), start.time(), end.time()):
+                crenaux[index + 5] = 0
+        
+        if intersect(time(17), time(18, 20), start.time(), end.time()):
+                crenaux[index + 6] = 0
 
 def intersect(start1, end1, start2, end2):
         return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
@@ -142,11 +135,11 @@ def affiche_cours(start, end, description):
 
 def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
-	return x & y
+        return x & y
 
 def compare_local(crenaux1, crenaux2):
-	result = map(etbit, crenaux1, crenaux2)
-	return result
+        result = map(etbit, crenaux1, crenaux2)
+        return result
 
 def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
         # à 912, on affiche les semaine, jour et horaire de l'indice.
@@ -166,23 +159,23 @@ def compare(liste_crenaux):
                         if lst[x] == 1:
                                 affiche_result(x)
 
-		return liste_crenaux
-	else:
-		crenaux1 = liste_crenaux.pop()
-		crenaux2 = liste_crenaux.pop()
-		liste_crenaux.append(compare_local(crenaux1, crenaux2))
-		return compare(liste_crenaux)
+                return liste_crenaux
+        else:
+                crenaux1 = liste_crenaux.pop()
+                crenaux2 = liste_crenaux.pop()
+                liste_crenaux.append(compare_local(crenaux1, crenaux2))
+                return compare(liste_crenaux)
 
 def ordergroup(liste_group):
-	liste_result = []
-	for group in liste_group:
-		liste_result.append(order(group))
+        liste_result = []
+        for group in liste_group:
+                liste_result.append(order(group))
 
         return list(liste_result)
 
 def correspondance_group(group):
-	global correspondance_group_tab
-	return correspondance_group_tab[group]
+        global correspondance_group_tab
+        return correspondance_group_tab[group]
 
 
 def main(tableauGroupe): # raccourci final d'utilisation
@@ -193,32 +186,6 @@ def main(tableauGroupe): # raccourci final d'utilisation
                 compare(edtParGroupe)
         except (KeyboardInterrupt, SystemExit):
                 exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
-
-class AppBase():
-        '''Application principale'''
-        def __init__(self):
-                '''constructeur'''
-                self.fen = Tk()
-                self.fen.title('Edt Analyser')
-                
-                self.bou_action = Button(self.fen)
-                self.bou_action.config(text='Action', command=self.action)
-                self.bou_action.pack()
-                
-                self.bou_quitter = Button(self.fen)
-                self.bou_quitter.config(text='Quitter', command=self.fen.destroy)
-                self.bou_quitter.pack()
-                
-        def run(self):
-                self.fen.mainloop()
-
-        def action(self):
-                '''Action sur un bouton'''
-                self.lab = Label(self.fen)
-                self.lab.config(text='')
-                self.lab.pack()
-                
-#fenetre = AppBase() # on crée l´objet qui va définir l´interface graphique
                 
 # main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
 #       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
