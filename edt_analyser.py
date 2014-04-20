@@ -25,7 +25,31 @@ import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
 # VARIABLE GLOBALES
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
-request = ""
+
+# VARIABLES GLOBALES à décommenter pour accélérer les tests (default: "")
+# login = ""
+# mdp = ""
+
+def connect(group):
+        locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
+        if 'login' not in globals():
+                global login
+                login = input("Login : ")
+        if 'mdp' not in globals():
+                global mdp
+                mdp = getpass.getpass("Mot de passe : ")
+        # global login, mdp
+        # if login == "":
+        #         login = input("Login : ")
+        # if mdp == "":
+        #         mdp = getpass.getpass("Mot de passe : ")
+        request = requests.get(
+                        'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
+                        auth=(login, mdp))
+        if not 200 <= request.status_code < 300:
+                print("Error status while retrieving the ics file.")
+                exit
+        return request
 
 def order(group):
         req = connect(group) # objet reçu de la connexion via la
