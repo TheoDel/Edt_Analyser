@@ -3,9 +3,8 @@
 
 # Autheur: Matthieu Riou <matthieu.riou@etu.univ-nantes.fr>
 # Version: v0.1
-# Versions de python supportées: 3.x
-# Dépendances: icalendar, requests, tkinter
-# (pip install ; utiliser virtualenvwrapper)
+# Versions de python supportées: 3.3+ (à cause d'icalendar)
+# Dépendances: icalendar, requests (pip install ; utiliser virtualenvwrapper)
 # Notes: Pour choisir les groupes, aller remplir la fonction à la toute
 # fin du programme.
 # ToDo: Développer une interface graphique.
@@ -29,45 +28,71 @@ try:
 except ImportError:
         raise ImportError("Tkinter is needed by this program. Verify you have a working tcl/tk installation.")        
 
+# VARIABLE GLOBALES
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
 horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
-request = ""
+
+# VARIABLES GLOBALES à décommenter pour accélérer les tests (default: "")
+# login = ""
+# mdp = ""
+
+def connect(group):
+        locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
+        if 'login' not in globals():
+                global login
+                login = input("Login : ")
+        if 'mdp' not in globals():
+                global mdp
+                mdp = getpass.getpass("Mot de passe : ")
+        # global login, mdp
+        # if login == "":
+        #         login = input("Login : ")
+        # if mdp == "":
+        #         mdp = getpass.getpass("Mot de passe : ")
+        request = requests.get(
+                        'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
+                        auth=(login, mdp))
+        if not 200 <= request.status_code < 300:
+                print("Error status while retrieving the ics file.")
+                exit
+        return request
 
 def order(group):
-	global request
-	if request == "":
-		request = connect(group) # objet reçu de la connexion via la
-        # fonction connect définie plus bas.
-	paris = pytz.timezone('Europe/Paris')
-	format = "%Y%m%dT%H%M%SZ"
-	datefind = datetime(2014, 4, 16, 11) # careful: 04 is invalid. 4
+        if 'req' not in globals():
+                global req
+                req = connect(group) # objet reçu de la connexion via la
+                # fonction connect. se connecte et définit request.
+                # on cache req.
+        paris = pytz.timezone('Europe/Paris')
+        format = "%Y%m%dT%H%M%SZ"
+        datefind = datetime(2014, 4, 16, 11) # careful: 04 is invalid. 4
         # is. (octal numbers not allowed in python!)
-	find = datefind.strftime("%d/%m/%Y/%Hh%M")
-	ffind = utc.localize(datefind)
-	fffind = ffind.astimezone(paris)
-	
-	#semaine de 4 à 22 (19 semaine)
-	#semaine de 6 jour
-	#jour de 8 crénaux 
-	#tableau de 19 * 6 * 8 = 912 case
-	
-	crenaux = [1]*912
-	
-	for component in Calendar.from_ical(request.text).walk():
-		if component.name == 'VEVENT':
-			start = component.get('DTSTART').to_ical()
-			dtutcstart = utc.localize(datetime.strptime(start, format))
-			dtstart = dtutcstart.astimezone(paris)
-			fstart = dtstart.strftime("%d/%m/%Y/%Hh%M")
-			
-			end = component.get('DTEND').to_ical()
-			dtutcend = utc.localize(datetime.strptime(end, format))
-			dtend = dtutcend.astimezone(paris)
-			fend = dtend.strftime("%d/%m/%Y/%Hh%M")
+        find = datefind.strftime("%d/%m/%Y/%Hh%M")
+        ffind = utc.localize(datefind)
+        fffind = ffind.astimezone(paris)
         
-			getCrenaux(crenaux, dtstart, dtend)
-			
-	return crenaux
+        #semaine de 4 à 22 (19 semaine)
+        #semaine de 6 jour
+        #jour de 8 crénaux 
+        #tableau de 19 * 6 * 8 = 912 case
+        
+        crenaux = [1]*912
+        
+        for component in Calendar.from_ical(req.text).walk():
+                if component.name == 'VEVENT':
+                        start = component.get('DTSTART').to_ical()
+                        dtutcstart = utc.localize(datetime.strptime(start.decode(), format))
+                        dtstart = dtutcstart.astimezone(paris)
+                        fstart = dtstart.strftime("%d/%m/%Y/%Hh%M")
+                        
+                        end = component.get('DTEND').to_ical()
+                        dtutcend = utc.localize(datetime.strptime(end.decode(), format))
+                        dtend = dtutcend.astimezone(paris)
+                        fend = dtend.strftime("%d/%m/%Y/%Hh%M")
+        
+                        getCrenaux(crenaux, dtstart, dtend)
+                        
+        return crenaux
 
 def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
 	
@@ -98,34 +123,22 @@ def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
 		crenaux[index + 6] = 0
 
 def intersect(start1, end1, start2, end2):
-	return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
-
-def connect(group):
-	locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
-	login = input("Login : ")
-	mdp = getpass.getpass("Mot de passe : ")
-	request = requests.get(
-		'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
-		auth=(login, mdp))
-	if not 200 <= request.status_code < 300:
-		return "Error status while retrieving the ics file."
-	
-	return request	
-	
-def affiche_cours(start, end, description):
-	format = "%Y%m%dT%H%M%SZ"
-	paris = pytz.timezone('Europe/Paris')
-	
-	dtutcstart = utc.localize(datetime.strptime(start, format))
-	dtutcend = utc.localize(datetime.strptime(end, format))
-	dtstart = dtutcstart.astimezone(paris)
-	dtend = dtutcend.astimezone(paris)
-	result = (u"Prochain cours le {date} de {start} à {end}").format(
-		date=dtstart.strftime("%A %d/%m/%Y"),
-		start=dtstart.strftime("%Hh%M"),
-		end=dtend.strftime("%Hh%M"))
+        return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
         
-	return result
+def affiche_cours(start, end, description):
+        format = "%Y%m%dT%H%M%SZ"
+        paris = pytz.timezone('Europe/Paris')
+        
+        dtutcstart = utc.localize(datetime.strptime(start, format))
+        dtutcend = utc.localize(datetime.strptime(end, format))
+        dtstart = dtutcstart.astimezone(paris)
+        dtend = dtutcend.astimezone(paris)
+        result = u"Prochain cours le {date} de {start} à {end}".format(
+                date=dtstart.strftime("%A %d/%m/%Y"),
+                start=dtstart.strftime("%Hh%M"),
+                end=dtend.strftime("%Hh%M"))
+        
+        return result
 
 def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
@@ -137,20 +150,21 @@ def compare_local(crenaux1, crenaux2):
 
 def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
         # à 912, on affiche les semaine, jour et horaire de l'indice.
-	semaine = x / 48
-	jour = (x - semaine*48) / 8
-	horaire = x - semaine*48 - jour*8
-	
-	heure = horaire_to_heure[horaire]
+        semaine = x / 48
+        jour = (x - semaine*48) / 8
+        horaire = int(x - semaine*48 - jour*8)
         
-	if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and (semaine == 13 or semaine == 14):
-		print("Semaine {} jour {} horaire {}".format(semaine+4, jour+1, heure))
+        heure = horaire_to_heure[horaire]
+        
+        if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and (semaine == 13 or semaine == 14):
+                print("Semaine {} jour {} horaire {}".format(semaine+4, jour+1, heure))
 
 def compare(liste_crenaux):
-	if len(liste_crenaux) == 1:
-		for x in range(len(liste_crenaux[0])):
-			if liste_crenaux[0][x] == 1:
-				affiche_result(x)
+        if len(liste_crenaux) == 1:
+                lst = list(liste_crenaux[0]) # on rend la liste subscriptable
+                for x in range(len(lst)):
+                        if lst[x] == 1:
+                                affiche_result(x)
 
 		return liste_crenaux
 	else:
@@ -164,7 +178,7 @@ def ordergroup(liste_group):
 	for group in liste_group:
 		liste_result.append(order(group))
 
-	return liste_result
+        return list(liste_result)
 
 def correspondance_group(group):
 	global correspondance_group_tab
@@ -173,38 +187,13 @@ def correspondance_group(group):
 
 def main(tableauGroupe): # raccourci final d'utilisation
         try:
-                edtParGroupe = ordergroup(map(correspondance_group, tableauGroupe))
+                edtParGroupe = ordergroup(list(map(correspondance_group, tableauGroupe)))
                 # grouplist est la liste des groupes, de la forme suivante:
                 # ["L1_245", "L1_247", ...]
                 compare(edtParGroupe)
         except (KeyboardInterrupt, SystemExit):
                 exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
 
-class AppBase():
-	'''Application principale'''
-	def __init__(self):
-		'''constructeur'''
-		self.fen = Tk()
-		self.fen.title('Edt Analyser')
- 
-		self.bou_action = Button(self.fen)
-		self.bou_action.config(text='Action', command=self.action)
-		self.bou_action.pack()
- 
-		self.bou_quitter = Button(self.fen)
-		self.bou_quitter.config(text='Quitter', command=self.fen.destroy)
-		self.bou_quitter.pack()
- 
-	def run(self):
-                self.fen.mainloop()
- 
-	def action(self):
-		'''Action sur un bouton'''
-		self.lab = Label(self.fen)
-		self.lab.config(text='')
-		self.lab.pack()
-                
-#fenetre = AppBase() # on crée l´objet qui va définir l´interface graphique
-
-main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
-      "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
+# main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
+#       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
+main(["L1_245", "M1_Oro"])

@@ -8,10 +8,10 @@ trouver des crénaux communs.
 
 ### Prérequis
 
-Avoir une tête, un interprêteur python v2.7, les modules `icalendar` et
+Avoir une tête, un interprêteur python v3.3+, les modules `icalendar` et
 `requests` (sinon :)
 
 `pip install icalendar requests`
 
-Le sacrifice d'une vierge n'est _PAS_ nécessaire au bon fonctionnement de ce
+Le sacrifice d'une vierge n'est _pas_ nécessaire au bon fonctionnement de ce
 logiciel sous licence MIT.
