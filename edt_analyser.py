@@ -52,8 +52,11 @@ def connect(group):
         return request
 
 def order(group):
-        req = connect(group) # objet reçu de la connexion via la
+        if 'req' not in globals():
+                global req
+                req = connect(group) # objet reçu de la connexion via la
                 # fonction connect. se connecte et définit request.
+                # on cache req.
         paris = pytz.timezone('Europe/Paris')
         format = "%Y%m%dT%H%M%SZ"
         datefind = datetime(2014, 4, 16, 11) # careful: 04 is invalid. 4
