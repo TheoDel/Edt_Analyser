@@ -33,6 +33,33 @@ horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00",
 # login = ""
 # mdp = ""
 
+
+
+
+
+class GestionDatetime:
+	
+	def __init__(self):
+		self.paris = pytz.timezone('Europe/Paris')
+		self.format = "%Y%m%dT%H%M%SZ"
+        #datefind = datetime(2014, 4, 16, 11) # careful: 04 is invalid. 4
+        # is. (octal numbers not allowed in python!)
+        #find = datefind.strftime("%d/%m/%Y/%Hh%M")
+        #ffind = utc.localize(datefind)
+        #fffind = ffind.astimezone(paris)	
+	
+	
+	def getDatetime(self, my_date):
+		date = my_date.to_ical()
+		dtutcdate = utc.localize(datetime.strptime(date.decode(), self.format))
+		dtdate = dtutcdate.astimezone(self.paris)
+
+		return dtdate
+
+
+
+
+
 def connect(group):
         locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
         if 'login' not in globals():
@@ -51,41 +78,33 @@ def connect(group):
         return request
 
 def order(group):
-        if 'req' not in globals():
-                global req
-                req = connect(group) # objet reçu de la connexion via la
-                # fonction connect. se connecte et définit request.
-                # on cache req.
-        paris = pytz.timezone('Europe/Paris')
-        format = "%Y%m%dT%H%M%SZ"
-        datefind = datetime(2014, 4, 16, 11) # careful: 04 is invalid. 4
-        # is. (octal numbers not allowed in python!)
-        find = datefind.strftime("%d/%m/%Y/%Hh%M")
-        ffind = utc.localize(datefind)
-        fffind = ffind.astimezone(paris)
-        
-        #semaine de 4 à 22 (19 semaine)
-        #semaine de 6 jour
-        #jour de 8 crénaux 
-        #tableau de 19 * 6 * 8 = 912 case
-        
-        crenaux = [1]*912
-        
-        for component in Calendar.from_ical(req.text).walk():
-                if component.name == 'VEVENT':
-                        start = component.get('DTSTART').to_ical()
-                        dtutcstart = utc.localize(datetime.strptime(start.decode(), format))
-                        dtstart = dtutcstart.astimezone(paris)
-                        fstart = dtstart.strftime("%d/%m/%Y/%Hh%M")
-                        
-                        end = component.get('DTEND').to_ical()
-                        dtutcend = utc.localize(datetime.strptime(end.decode(), format))
-                        dtend = dtutcend.astimezone(paris)
-                        fend = dtend.strftime("%d/%m/%Y/%Hh%M")
-        
-                        getCrenaux(crenaux, dtstart, dtend)
-                        
-        return crenaux
+	if 'req' not in globals():
+		global req
+		req = connect(group) # objet reçu de la connexion via la
+		    # fonction connect. se connecte et définit request.
+		    # on cache req.
+
+	gestionDate = GestionDatetime() 
+
+
+	#semaine de 4 à 22 (19 semaine)
+	#semaine de 6 jour
+	#jour de 8 crénaux 
+	#tableau de 19 * 6 * 8 = 912 case
+
+	crenaux = [1]*912
+
+	for component in Calendar.from_ical(req.text).walk():
+		if component.name == 'VEVENT':
+			start = gestionDate.getDatetime(component.get('DTSTART'))
+			end = gestionDate.getDatetime(component.get('DTEND'))
+
+			getCrenaux(crenaux, start, end)
+		            
+	return crenaux
+
+
+
 
 def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
         
