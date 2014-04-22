@@ -117,21 +117,8 @@ def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
 
 def intersect(start1, end1, start2, end2):
         return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
-        
-def affiche_cours(start, end, description):
-        format = "%Y%m%dT%H%M%SZ"
-        paris = pytz.timezone('Europe/Paris')
-        
-        dtutcstart = utc.localize(datetime.strptime(start, format))
-        dtutcend = utc.localize(datetime.strptime(end, format))
-        dtstart = dtutcstart.astimezone(paris)
-        dtend = dtutcend.astimezone(paris)
-        result = u"Prochain cours le {date} de {start} à {end}".format(
-                date=dtstart.strftime("%A %d/%m/%Y"),
-                start=dtstart.strftime("%Hh%M"),
-                end=dtend.strftime("%Hh%M"))
-        
-        return result
+
+
 
 def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
