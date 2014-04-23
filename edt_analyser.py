@@ -154,7 +154,24 @@ def compare_local(crenaux1, crenaux2):
         result = map(etbit, crenaux1, crenaux2)
         return result
 
-def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
+def compare(liste_crenaux):
+	if len(liste_crenaux) == 1:
+		return list(liste_crenaux[0])
+	else:
+		crenaux1 = liste_crenaux.pop()
+		crenaux2 = liste_crenaux.pop()
+		liste_crenaux.append(compare_local(crenaux1, crenaux2))
+		return compare(liste_crenaux)
+
+
+
+def affiche_result(liste):
+	for i, item in enumerate(liste):
+		if item == 1:
+			affiche_creneau(i)
+
+
+def affiche_creneau(x): # indice x. en fonction de l'indice qui varie de 1
         # à 912, on affiche les semaine, jour et horaire de l'indice.
         semaine = int(x / 48)
         jour = int((x - semaine*48) / 8)
@@ -165,20 +182,6 @@ def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
         if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and semaine+2 == 18:
                 print("Semaine {} jour {} horaire {}".format(semaine+2, jour+1, heure))
 
-def compare(liste_crenaux):
-        if len(liste_crenaux) == 1:
-                lst = list(liste_crenaux[0]) # on rend la liste subscriptable
-                for x in range(len(lst)):
-                        if lst[x] == 1:
-                                affiche_result(x)
-
-                return liste_crenaux
-        else:
-                crenaux1 = liste_crenaux.pop()
-                crenaux2 = liste_crenaux.pop()
-                liste_crenaux.append(compare_local(crenaux1, crenaux2))
-                return compare(liste_crenaux)
-
 
 
 def correspondance_group(group):
@@ -187,13 +190,14 @@ def correspondance_group(group):
 
 
 def main(tableauGroupe): # raccourci final d'utilisation
-        try:
-                edtParGroupe = analyseEdtForGroups(list(map(correspondance_group, tableauGroupe)))
-                # grouplist est la liste des groupes, de la forme suivante:
-                # ["L1_245", "L1_247", ...]
-                compare(edtParGroupe)
-        except (KeyboardInterrupt, SystemExit):
-                exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
+	try:
+		edtParGroupe = analyseEdtForGroups(list(map(correspondance_group, tableauGroupe)))
+		# grouplist est la liste des groupes, de la forme suivante:
+		# ["L1_245", "L1_247", ...]
+		resultat = compare(edtParGroupe)
+		affiche_result(resultat)
+	except (KeyboardInterrupt, SystemExit):
+		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
                 
 # main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
 #       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
