@@ -56,34 +56,28 @@ class GestionDatetime:
 
 		return dtdate
 
+class Connexion:
+	
+	def __init__(self):
+		self.login = input("Login : ")
+		self.mdp = getpass.getpass("Mot de passe : ")
+
+
+	def connect(self, group):
+		request = requests.get(
+						'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
+						auth=(self.login, self.mdp),
+						timeout=2)
+		if not 200 <= request.status_code < 300:
+			print("Error status while retrieving the ics file for group " + group + ".")
+			exit
+
+		return request
 
 
 
-
-def connect(group):
-        locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
-        if 'login' not in globals():
-                global login
-                login = input("Login : ")
-        if 'mdp' not in globals():
-                global mdp
-                mdp = getpass.getpass("Mot de passe : ")
-        request = requests.get(
-                        'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
-                        auth=(login, mdp),
-                        timeout=2)
-        if not 200 <= request.status_code < 300:
-                print("Error status while retrieving the ics file.")
-                exit
-        return request
-
-def order(group):
-	req = connect(group) # objet reçu de la connexion via la
-		    # fonction connect. se connecte et définit request.
-		    # on cache req.
-
+def order(edt):
 	gestionDate = GestionDatetime() 
-
 
 	#semaine de 2 à 20 (19 semaine) (20 pour être large, normalement 18)
 	#semaine de 6 jour
@@ -92,7 +86,7 @@ def order(group):
 
 	crenaux = [1]*912
 
-	for component in Calendar.from_ical(req.text).walk():
+	for component in Calendar.from_ical(edt.text).walk():
 		if component.name == 'VEVENT':
 			start = gestionDate.getDatetime(component.get('DTSTART'))
 			end = gestionDate.getDatetime(component.get('DTEND'))
@@ -171,11 +165,14 @@ def compare(liste_crenaux):
                 return compare(liste_crenaux)
 
 def ordergroup(liste_group):
-        liste_result = []
-        for group in liste_group:
-                liste_result.append(order(group))
+	connexion = Connexion()		
 
-        return list(liste_result)
+	liste_result = []
+	for group in liste_group:
+		edt = connexion.connect(group)
+		liste_result.append(order(edt))
+
+	return list(liste_result)
 
 def correspondance_group(group):
         global correspondance_group_tab
