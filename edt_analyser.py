@@ -76,7 +76,9 @@ class Connexion:
 
 
 
-def order(edt):
+
+
+def analyseEdt(edt):
 	gestionDate = GestionDatetime() 
 
 	#semaine de 2 à 20 (19 semaine) (20 pour être large, normalement 18)
@@ -94,8 +96,6 @@ def order(edt):
 			getCrenaux(crenaux, start, end)
 		            
 	return crenaux
-
-
 
 
 def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
@@ -126,8 +126,23 @@ def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
 	if intersect(time(17), time(18, 20), start.time(), end.time()):
 		crenaux[index + 6] = 0
 
+
 def intersect(start1, end1, start2, end2):
         return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
+
+
+
+
+def analyseEdtForGroups(liste_group):
+	connexion = Connexion()		
+
+	liste_result = []
+	for group in liste_group:
+		edt = connexion.connect(group) 			#getEdt
+		liste_result.append(analyseEdt(edt))	#analyseEdt
+
+	return list(liste_result)
+
 
 
 
@@ -164,15 +179,7 @@ def compare(liste_crenaux):
                 liste_crenaux.append(compare_local(crenaux1, crenaux2))
                 return compare(liste_crenaux)
 
-def ordergroup(liste_group):
-	connexion = Connexion()		
 
-	liste_result = []
-	for group in liste_group:
-		edt = connexion.connect(group)
-		liste_result.append(order(edt))
-
-	return list(liste_result)
 
 def correspondance_group(group):
         global correspondance_group_tab
@@ -181,7 +188,7 @@ def correspondance_group(group):
 
 def main(tableauGroupe): # raccourci final d'utilisation
         try:
-                edtParGroupe = ordergroup(list(map(correspondance_group, tableauGroupe)))
+                edtParGroupe = analyseEdtForGroups(list(map(correspondance_group, tableauGroupe)))
                 # grouplist est la liste des groupes, de la forme suivante:
                 # ["L1_245", "L1_247", ...]
                 compare(edtParGroupe)
