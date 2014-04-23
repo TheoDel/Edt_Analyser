@@ -87,7 +87,7 @@ def order(group):
 	gestionDate = GestionDatetime() 
 
 
-	#semaine de 4 à 22 (19 semaine)
+	#semaine de 2 à 20 (19 semaine) (20 pour être large, normalement 18)
 	#semaine de 6 jour
 	#jour de 8 crénaux 
 	#tableau de 19 * 6 * 8 = 912 case
@@ -108,31 +108,31 @@ def order(group):
 
 def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
         
-        isodate = start.isocalendar() #tuple (annee, semaine, jour de 1 a 7)
-        
-        index = (isodate[1]-4) * 48
-        index = index + (isodate[2]-1) * 8
-        
-        if intersect(time(8), time(9, 20), start.time(), end.time()):
-                crenaux[index + 0] = 0
-        
-        if intersect(time(9, 30), time(10, 50), start.time(), end.time()):
-                crenaux[index + 1] = 0
-        
-        if intersect(time(11), time(12, 20), start.time(), end.time()):
-                crenaux[index + 2] = 0
-        
-        if intersect(time(12, 30), time(13, 50), start.time(), end.time()):
-                crenaux[index + 3] = 0
-        
-        if intersect(time(14), time(15, 20), start.time(), end.time()):
-                crenaux[index + 4] = 0
-        
-        if intersect(time(15, 30), time(16, 50), start.time(), end.time()):
-                crenaux[index + 5] = 0
-        
-        if intersect(time(17), time(18, 20), start.time(), end.time()):
-                crenaux[index + 6] = 0
+	isodate = start.isocalendar() #tuple (annee, semaine, jour de 1 a 7)
+
+	index = (isodate[1]-2) * 48
+	index = index + (isodate[2]-1) * 8
+
+	if intersect(time(8), time(9, 20), start.time(), end.time()):
+		crenaux[index + 0] = 0
+
+	if intersect(time(9, 30), time(10, 50), start.time(), end.time()):
+		crenaux[index + 1] = 0
+
+	if intersect(time(11), time(12, 20), start.time(), end.time()):
+		crenaux[index + 2] = 0
+
+	if intersect(time(12, 30), time(13, 50), start.time(), end.time()):
+		crenaux[index + 3] = 0
+
+	if intersect(time(14), time(15, 20), start.time(), end.time()):
+		crenaux[index + 4] = 0
+
+	if intersect(time(15, 30), time(16, 50), start.time(), end.time()):
+		crenaux[index + 5] = 0
+
+	if intersect(time(17), time(18, 20), start.time(), end.time()):
+		crenaux[index + 6] = 0
 
 def intersect(start1, end1, start2, end2):
         return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
@@ -155,8 +155,8 @@ def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
         
         heure = horaire_to_heure[horaire]
         
-        if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and (semaine == 13 or semaine == 14):
-                print("Semaine {} jour {} horaire {}".format(semaine+4, jour+1, heure))
+        if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and (semaine+2 == 17 or semaine+2 == 18):
+                print("Semaine {} jour {} horaire {}".format(semaine+2, jour+1, heure))
 
 def compare(liste_crenaux):
         if len(liste_crenaux) == 1:
