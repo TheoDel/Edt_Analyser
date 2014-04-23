@@ -78,9 +78,7 @@ def connect(group):
         return request
 
 def order(group):
-	if 'req' not in globals():
-		global req
-		req = connect(group) # objet reçu de la connexion via la
+	req = connect(group) # objet reçu de la connexion via la
 		    # fonction connect. se connecte et définit request.
 		    # on cache req.
 
@@ -155,7 +153,7 @@ def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
         
         heure = horaire_to_heure[horaire]
         
-        if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and (semaine+2 == 17 or semaine+2 == 18):
+        if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and semaine+2 == 18:
                 print("Semaine {} jour {} horaire {}".format(semaine+2, jour+1, heure))
 
 def compare(liste_crenaux):
@@ -195,4 +193,4 @@ def main(tableauGroupe): # raccourci final d'utilisation
                 
 # main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
 #       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
-main(["L1_245", "M1_Oro"])
+main(["L1_245", "L1_248"])
