@@ -149,8 +149,8 @@ def compare_local(crenaux1, crenaux2):
 
 def affiche_result(x): # indice x. en fonction de l'indice qui varie de 1
         # à 912, on affiche les semaine, jour et horaire de l'indice.
-        semaine = x / 48
-        jour = (x - semaine*48) / 8
+        semaine = int(x / 48)
+        jour = int((x - semaine*48) / 8)
         horaire = int(x - semaine*48 - jour*8)
         
         heure = horaire_to_heure[horaire]
