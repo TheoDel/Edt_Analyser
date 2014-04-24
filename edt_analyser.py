@@ -66,8 +66,10 @@ class Connexion:
 
 
 	def connect(self, group):
+		code_group = self.correspondance_group_tab[group]
+
 		request = requests.get(
-						'https://edt.univ-nantes.fr/sciences/' + group + '.ics',
+						'https://edt.univ-nantes.fr/sciences/' + code_group + '.ics',
 						auth=(self.login, self.mdp),
 						timeout=2)
 		if not 200 <= request.status_code < 300:
@@ -236,8 +238,8 @@ def correspondance_group(group):
 def main(tableauGroupe): # raccourci final d'utilisation
 	try:
 		edt = Edt()
-		edt.addEdt(correspondance_group("L1_245"))
-		edt.addEdt(correspondance_group("L1_248"))
+		edt.addEdt("L1_245")
+		edt.addEdt("L1_248")
 		affiche_result(edt.compareAll())
 	except (KeyboardInterrupt, SystemExit):
 		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
