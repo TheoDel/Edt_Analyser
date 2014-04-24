@@ -98,29 +98,29 @@ class Edt:
 			e = self.connexion.connect(group)
 			self.edt[group] = analyseEdt(e)
 
-	def compare(self, group1, group2):
-		if group1 not in self.edt or group2 not in self.edt: #try except ?
+	def compare(self, list_groups):
+		if not all(group in self.edt for group in list_groups) : #try except ?
 			print("Erreur, groupe non présent")
 			exit(1)
 
-		return map(etbit, self.edt[group1], self.edt[group2])
+		res = []
+
+		for group in list_groups:
+			#Hou ! Le vilain test à chaque tour de boucle pour un seul cas qui se retrouve ici maintenant !
+			#Mais j'ai pas trop trouvé comment faire autrement. Iterateur ?
+			if len(res) == 0: 
+				res = self.edt[group]
+			else:
+				res = map(etbit, res, self.edt[group]) #No need to convert it in list here, because we'll just iterate over it (with an other map)
+
+		return list(res) #Must be convert here, because we want to return a list, and not an iterators (map object)
 
 	def compareAll(self):
 		if len(self.edt) == 0: #try except ?
 			print("Erreur, il faut des groupes à comparer")
 			exit(1)
 
-		res = []
-
-		for k,v in self.edt.items():
-			if len(res) == 0: #Hou ! Le vilain test à chaque tour de boucle pour un seul cas ! Mais j'ai pas trop trouvé comment faire autrement. Iterateur ?
-				res = v
-			else:
-				res = map(etbit, res, v) #No need to convert it in list here, because we'll just iterate over it (with an other map)
-
-		
-		return list(res) #Must be convert here, because we want to return a list, and not an iterators (map object)
-
+		return self.compare(self.edt)
 
 def analyseEdt(edt):
 	gestionDate = GestionDatetime() 
