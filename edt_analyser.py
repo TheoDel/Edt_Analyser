@@ -62,6 +62,8 @@ class Connexion:
 		self.login = input("Login : ")
 		self.mdp = getpass.getpass("Mot de passe : ")
 
+		self.correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
+
 
 	def connect(self, group):
 		request = requests.get(
@@ -75,7 +77,49 @@ class Connexion:
 		return request
 
 
+class Edt:
 
+	def __init__(self):
+		self.start = 2 #Semaine de départ
+		self.end = 20 #Semaine de fin
+		self.nbWeek = self.end - self.start + 1
+		self.nbDayInWeek = 6 #Nombre de jour par semaine
+		self.nbSlotInDay = 8 #Nombre de créneaux par jour
+
+		self.connexion = Connexion()
+		self.edt = {}
+
+		nbSlot = self.nbWeek * self.nbDayInWeek * self.nbSlotInDay
+
+		self.slot = [1]*nbSlot #Tableau des créneaux
+
+	def addEdt(self, group):
+		if group not in self.edt:
+			e = self.connexion.connect(group)
+			self.edt[group] = analyseEdt(e)
+
+	def compare(self, group1, group2):
+		if group1 not in self.edt or group2 not in self.edt: #try except ?
+			print("Erreur, groupe non présent")
+			exit(1)
+
+		return map(etbit, self.edt[group1], self.edt[group2])
+
+	def compareAll(self):
+		if len(self.edt) == 0: #try except ?
+			print("Erreur, il faut des groupes à comparer")
+			exit(1)
+
+		res = []
+
+		for k,v in self.edt.items():
+			if len(res) == 0: #Hou ! Le vilain test à chaque tour de boucle pour un seul cas ! Mais j'ai pas trop trouvé comment faire autrement. Iterateur ?
+				res = v
+			else:
+				res = map(etbit, res, v) #No need to convert it in list here, because we'll just iterate over it (with an other map)
+
+		
+		return list(res) #Must be convert here, because we want to return a list, and not an iterators (map object)
 
 
 def analyseEdt(edt):
@@ -191,11 +235,10 @@ def correspondance_group(group):
 
 def main(tableauGroupe): # raccourci final d'utilisation
 	try:
-		edtParGroupe = analyseEdtForGroups(list(map(correspondance_group, tableauGroupe)))
-		# grouplist est la liste des groupes, de la forme suivante:
-		# ["L1_245", "L1_247", ...]
-		resultat = compare(edtParGroupe)
-		affiche_result(resultat)
+		edt = Edt()
+		edt.addEdt(correspondance_group("L1_245"))
+		edt.addEdt(correspondance_group("L1_248"))
+		affiche_result(edt.compareAll())
 	except (KeyboardInterrupt, SystemExit):
 		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
                 
