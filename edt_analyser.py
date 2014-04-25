@@ -82,9 +82,9 @@ class Connexion:
 class Edt:
 
 	def __init__(self):
-		self.start = 2 #Semaine de départ
-		self.end = 20 #Semaine de fin
-		self.nbWeek = self.end - self.start + 1
+		self.startWeek = 2 #Semaine de départ
+		self.endWeek = 20 #Semaine de fin
+		self.nbWeek = self.endWeek - self.startWeek + 1
 		self.nbDayInWeek = 6 #Nombre de jour par semaine
 		self.nbSlotInDay = 8 #Nombre de créneaux par jour
 
@@ -110,10 +110,25 @@ class Edt:
 				start = self.gestionDate.getDatetime(component.get('DTSTART'))
 				end = self.gestionDate.getDatetime(component.get('DTEND'))
 
-				getCrenaux(slots, start, end)
+				isoIndex = self.getIsoIndex(start)
+
+				slot = Slot(start.time(), end.time())
+
+
+				for index, defaultSlot in defaultSlots:
+					if slot.intersect(defaultSlot): #If the slot intersect with a default slot
+						slots[isoIndex + index] = 0 #This default slot isn't free
+
 				        
 		return slots
 
+	def getIsoIndex(self, datetime):
+		isodate = datetime.isocalendar() #tuple (years, week, day) day from 1 to 7
+
+		index = (isodate[1] - self.startWeek) * self.nbDayInWeek * self.nbSlotInDay
+		index += (isodate[2] - 1) * self.nbSlotInDay
+
+		return index
 
 	def compare(self, list_groups):
 		if not all(group in self.edt for group in list_groups) : #try except ?
@@ -164,39 +179,6 @@ defaultSlots = [
 				(7, Slot(time(18,20), time(19,30)))
 ]
 
-
-
-def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
-        
-	isodate = start.isocalendar() #tuple (annee, semaine, jour de 1 a 7)
-
-	index = (isodate[1]-2) * 48
-	index = index + (isodate[2]-1) * 8
-
-	if intersect(time(8), time(9, 20), start.time(), end.time()):
-		crenaux[index + 0] = 0
-
-	if intersect(time(9, 30), time(10, 50), start.time(), end.time()):
-		crenaux[index + 1] = 0
-
-	if intersect(time(11), time(12, 20), start.time(), end.time()):
-		crenaux[index + 2] = 0
-
-	if intersect(time(12, 30), time(13, 50), start.time(), end.time()):
-		crenaux[index + 3] = 0
-
-	if intersect(time(14), time(15, 20), start.time(), end.time()):
-		crenaux[index + 4] = 0
-
-	if intersect(time(15, 30), time(16, 50), start.time(), end.time()):
-		crenaux[index + 5] = 0
-
-	if intersect(time(17), time(18, 20), start.time(), end.time()):
-		crenaux[index + 6] = 0
-
-
-def intersect(start1, end1, start2, end2):
-        return (start1 <= start2 <= end1) or (start2 <= start1 <= end2)
 
 
 
