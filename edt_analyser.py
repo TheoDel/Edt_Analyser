@@ -167,6 +167,13 @@ class Edt:
 	def resultToString(self, result):
 		return "Semaine " + str(result[0]) + " Jour " + str(result[1]) + " Horaire " + result[2].toString()
 
+	def compareAndPrint(self):
+		allResults = self.compareAll()
+		
+		results = [i for i,item in enumerate(allResults) if item == 1]
+
+		for e in map(self.resultToString, map(self.indexToResult, results)):
+			print(e)
 
 class Slot:
 
@@ -205,33 +212,12 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
 
 
 
-
-def affiche_result(liste):
-	for i, item in enumerate(liste):
-		if item == 1:
-			affiche_creneau(i)
-
-
-def affiche_creneau(x): # indice x. en fonction de l'indice qui varie de 1
-        # à 912, on affiche les semaine, jour et horaire de l'indice.
-        semaine = int(x / 48)
-        jour = int((x - semaine*48) / 8)
-        horaire = int(x - semaine*48 - jour*8)
-        
-        heure = horaire_to_heure[horaire]
-        
-        if jour + 1 != 6 and heure != "12h30" and heure != "18h30" and semaine+2 == 18:
-                print("Semaine {} jour {} horaire {}".format(semaine+2, jour+1, heure))
-
-
-
-
 def main(tableauGroupe): # raccourci final d'utilisation
 	try:
 		edt = Edt()
 		edt.addEdt("L1_245")
 		edt.addEdt("L1_248")
-		affiche_result(edt.compareAll())
+		edt.compareAndPrint()
 	except (KeyboardInterrupt, SystemExit):
 		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
                 
