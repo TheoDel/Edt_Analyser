@@ -154,7 +154,18 @@ class Edt:
 
 		return self.compare(self.edt)
 
+	
+	def indexToResult(self, index):
+		week = int(index / (self.nbDayInWeek * self.nbSlotInDay)) + self.startWeek
+		day = int((index % (self.nbDayInWeek * self.nbSlotInDay)) / self.nbSlotInDay) + 1
+		time = int((index % (self.nbDayInWeek * self.nbSlotInDay)) % self.nbSlotInDay)
 
+		slot = [s for i,s in defaultSlots if i == time][0]
+
+		return week, day, slot
+
+	def resultToString(self, result):
+		return "Semaine " + str(result[0]) + " Jour " + str(result[1]) + " Horaire " + result[2].toString()
 
 
 class Slot:
@@ -166,6 +177,9 @@ class Slot:
 
 	def intersect(self, otherSlot):
 		return (self.start <= otherSlot.start <= self.end) or (otherSlot.start <= self.start <= otherSlot.end)
+
+	def toString(self):
+		return "de " + str(self.start) + " à " + str(self.end)
 
 
 defaultSlots = [
