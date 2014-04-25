@@ -91,14 +91,29 @@ class Edt:
 		self.connexion = Connexion()
 		self.edt = {}
 
-		nbSlot = self.nbWeek * self.nbDayInWeek * self.nbSlotInDay
+		self.nbSlot = self.nbWeek * self.nbDayInWeek * self.nbSlotInDay
 
-		self.slot = [1]*nbSlot #Tableau des créneaux
+		self.gestionDate = GestionDatetime()
 
 	def addEdt(self, group):
 		if group not in self.edt:
 			e = self.connexion.connect(group)
-			self.edt[group] = analyseEdt(e)
+			self.edt[group] = self.analyseEdt(e)
+
+
+	def analyseEdt(self, edt): 
+
+		slots = [1]*self.nbSlot #At the beggining, all the slots are free
+
+		for component in Calendar.from_ical(edt.text).walk():
+			if component.name == 'VEVENT':
+				start = self.gestionDate.getDatetime(component.get('DTSTART'))
+				end = self.gestionDate.getDatetime(component.get('DTEND'))
+
+				getCrenaux(slots, start, end)
+				        
+		return slots
+
 
 	def compare(self, list_groups):
 		if not all(group in self.edt for group in list_groups) : #try except ?
@@ -124,24 +139,8 @@ class Edt:
 
 		return self.compare(self.edt)
 
-def analyseEdt(edt):
-	gestionDate = GestionDatetime() 
 
-	#semaine de 2 à 20 (19 semaine) (20 pour être large, normalement 18)
-	#semaine de 6 jour
-	#jour de 8 crénaux 
-	#tableau de 19 * 6 * 8 = 912 case
 
-	crenaux = [1]*912
-
-	for component in Calendar.from_ical(edt.text).walk():
-		if component.name == 'VEVENT':
-			start = gestionDate.getDatetime(component.get('DTSTART'))
-			end = gestionDate.getDatetime(component.get('DTEND'))
-
-			getCrenaux(crenaux, start, end)
-		            
-	return crenaux
 
 
 def getCrenaux(crenaux, start, end): #Pour le semestre 2 de 2014
