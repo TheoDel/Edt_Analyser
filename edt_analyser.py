@@ -178,35 +178,12 @@ def intersect(start1, end1, start2, end2):
 
 
 
-def analyseEdtForGroups(liste_group):
-	connexion = Connexion()		
-
-	liste_result = []
-	for group in liste_group:
-		edt = connexion.connect(group) 			#getEdt
-		liste_result.append(analyseEdt(edt))	#analyseEdt
-
-	return list(liste_result)
-
-
 
 
 def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
         return x & y
 
-def compare_local(crenaux1, crenaux2):
-        result = map(etbit, crenaux1, crenaux2)
-        return result
-
-def compare(liste_crenaux):
-	if len(liste_crenaux) == 1:
-		return list(liste_crenaux[0])
-	else:
-		crenaux1 = liste_crenaux.pop()
-		crenaux2 = liste_crenaux.pop()
-		liste_crenaux.append(compare_local(crenaux1, crenaux2))
-		return compare(liste_crenaux)
 
 
 
@@ -228,10 +205,6 @@ def affiche_creneau(x): # indice x. en fonction de l'indice qui varie de 1
                 print("Semaine {} jour {} horaire {}".format(semaine+2, jour+1, heure))
 
 
-
-def correspondance_group(group):
-        global correspondance_group_tab
-        return correspondance_group_tab[group]
 
 
 def main(tableauGroupe): # raccourci final d'utilisation
