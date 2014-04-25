@@ -81,7 +81,7 @@ class Connexion:
 
 class Edt:
 
-	def __init__(self):
+	def __init__(self, option):
 		self.startWeek = 2 #Semaine de départ
 		self.endWeek = 20 #Semaine de fin
 		self.nbWeek = self.endWeek - self.startWeek + 1
@@ -94,6 +94,8 @@ class Edt:
 		self.nbSlot = self.nbWeek * self.nbDayInWeek * self.nbSlotInDay
 
 		self.gestionDate = GestionDatetime()
+
+		self.option = option
 
 	def addEdt(self, group):
 		if group not in self.edt:
@@ -160,20 +162,24 @@ class Edt:
 		day = int((index % (self.nbDayInWeek * self.nbSlotInDay)) / self.nbSlotInDay) + 1
 		time = int((index % (self.nbDayInWeek * self.nbSlotInDay)) % self.nbSlotInDay)
 
-		slot = [s for i,s in defaultSlots if i == time][0]
-
-		return week, day, slot
+		return week, day, time
 
 	def resultToString(self, result):
-		return "Semaine " + str(result[0]) + " Jour " + str(result[1]) + " Horaire " + result[2].toString()
+		slot = [s for i,s in defaultSlots if i == result[2]][0]
+
+		return "Semaine " + str(result[0]) + " Jour " + str(result[1]) + " Horaire " + slot.toString()
 
 	def compareAndPrint(self):
 		allResults = self.compareAll()
 		
-		results = [i for i,item in enumerate(allResults) if item == 1]
+		results_tmp = [i for i,item in enumerate(allResults) if item == 1]
 
-		for e in map(self.resultToString, map(self.indexToResult, results)):
+		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if self.option.isIn(item)])
+
+		for e in results:
 			print(e)
+
+
 
 class Slot:
 
@@ -223,7 +229,8 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
 
 def main(tableauGroupe): # raccourci final d'utilisation
 	try:
-		edt = Edt()
+		option = Option([18], [1,2,3,4,5], [1,2,3,4,5,6])
+		edt = Edt(option)
 		edt.addEdt("L1_245")
 		edt.addEdt("L1_248")
 		edt.compareAndPrint()
