@@ -10,20 +10,21 @@
 # ToDo: Développer une interface graphique.
 
 try:
-        import codecs # support des encodages
-        from datetime import datetime # time manipulation functions
-        from datetime import time 
-        from icalendar import Calendar # support des .ics
-        import locale # support of local locale (oh really ?), and internationalization
-        import pytz # accurate timezone calculations
-        from pytz import utc
-        import requests # permet de réaliser simplement (plus qu'avec urllib2) des
-        # requêtes HTTP
-        import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
-        # demander un mot de passe
+	import codecs # support des encodages
+	from datetime import datetime # time manipulation functions
+	from datetime import date
+	from datetime import time 
+	from icalendar import Calendar # support des .ics
+	import locale # support of local locale (oh really ?), and internationalization
+	import pytz # accurate timezone calculations
+	from pytz import utc
+	import requests # permet de réaliser simplement (plus qu'avec urllib2) des
+	# requêtes HTTP
+	import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
+	# demander un mot de passe
 except ImportError:
-        raise ImportError("Modules are required to run this program. Try `pip install icalendar requests`.")
-        exit
+	raise ImportError("Modules are required to run this program. Try `pip install icalendar requests`.")
+	exit
 
 # VARIABLE GLOBALES
 correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
@@ -97,6 +98,8 @@ class Edt:
 
 		self.option = option
 
+		self.convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+
 	def addEdt(self, group):
 		if group not in self.edt:
 			e = self.connexion.connect(group)
@@ -167,7 +170,7 @@ class Edt:
 	def resultToString(self, result):
 		slot = [s for i,s in defaultSlots if i == result[2]][0]
 
-		return "Semaine " + str(result[0]) + " Jour " + str(result[1]) + " Horaire " + slot.toString()
+		return "Semaine " + str(result[0]) + " " + self.convertDay[result[1]-1] + " " + slot.toString()
 
 	def compareAndPrint(self):
 		allResults = self.compareAll()
@@ -192,7 +195,7 @@ class Slot:
 		return (self.start <= otherSlot.start <= self.end) or (otherSlot.start <= self.start <= otherSlot.end)
 
 	def toString(self):
-		return "de " + str(self.start) + " à " + str(self.end)
+		return "de " + self.start.strftime("%Hh%M") + " à " + self.end.strftime("%Hh%M")
 
 
 defaultSlots = [
@@ -229,7 +232,7 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
 
 def main(tableauGroupe): # raccourci final d'utilisation
 	try:
-		option = Option([18], [1,2,3,4,5], [1,2,3,4,5,6])
+		option = Option([18], [1,2,3,4,5], [0,1,2,4,5,6])
 		edt = Edt(option)
 		edt.addEdt("L1_245")
 		edt.addEdt("L1_248")
