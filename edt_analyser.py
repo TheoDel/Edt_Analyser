@@ -28,7 +28,6 @@ except ImportError:
 
 
 
-
 class GestionDatetime:
 	
 	def __init__(self):
@@ -73,7 +72,7 @@ class Connexion:
 
 class Edt:
 
-	def __init__(self, option):
+	def __init__(self, list_option):
 		self.startWeek = 2 #Semaine de départ
 		self.endWeek = 20 #Semaine de fin
 		self.nbWeek = self.endWeek - self.startWeek + 1
@@ -87,7 +86,7 @@ class Edt:
 
 		self.gestionDate = GestionDatetime()
 
-		self.option = option
+		self.options = list_option
 
 		self.convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
@@ -168,7 +167,7 @@ class Edt:
 		
 		results_tmp = [i for i,item in enumerate(allResults) if item == 1]
 
-		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if self.option.isIn(item)])
+		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options)])
 
 		for e in results:
 			print(e)
@@ -223,8 +222,9 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
 
 def main(tableauGroupe): # raccourci final d'utilisation
 	try:
-		option = Option([18], [1,2,3,4,5], [0,1,2,4,5,6])
-		edt = Edt(option)
+		option = Option([18], [2,3], [0,1,2,4,5,6])
+		option2 = Option([15], [1], [0,1,2,4,5,6])
+		edt = Edt([option, option2])
 		edt.addEdt("L1_245")
 		edt.addEdt("L1_248")
 		edt.compareAndPrint()
