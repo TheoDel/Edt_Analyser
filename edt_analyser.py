@@ -26,15 +26,6 @@ except ImportError:
 	raise ImportError("Modules are required to run this program. Try `pip install icalendar requests`.")
 	exit
 
-# VARIABLE GLOBALES
-correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
-horaire_to_heure = ["8h00", "9h30", "11h00", "12h30", "14h00", "15h30", "17h00", "18h30"]
-
-# VARIABLES GLOBALES à décommenter pour accélérer les tests (default: "")
-# login = ""
-# mdp = ""
-
-
 
 
 
