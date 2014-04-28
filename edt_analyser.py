@@ -95,6 +95,10 @@ class Edt:
 			e = self.connexion.connect(group)
 			self.edt[group] = self.analyseEdt(e)
 
+	def removeEdt(self, group):
+		if group in self.edt:
+			del self.edt[group]
+
 
 	def analyseEdt(self, edt): 
 
@@ -227,6 +231,9 @@ def main(tableauGroupe): # raccourci final d'utilisation
 		edt = Edt([option, option2])
 		edt.addEdt("L1_245")
 		edt.addEdt("L1_248")
+		edt.compareAndPrint()
+		edt.removeEdt("L1_245")
+		print("\n")
 		edt.compareAndPrint()
 	except (KeyboardInterrupt, SystemExit):
 		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
