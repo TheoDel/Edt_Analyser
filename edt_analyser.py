@@ -129,7 +129,7 @@ class Edt:
 
 		return index
 
-	def compare(self, list_groups):
+	def compare(self, list_groups): #Oh Oh ! Work for both list and dictionnary, it seems
 		if not all(group in self.edt for group in list_groups) : #try except ?
 			print("Erreur, groupe non présent")
 			exit(1)
@@ -176,6 +176,44 @@ class Edt:
 		for e in results:
 			print(e)
 
+	def compareAllEachToEach(self):
+		return self.compareEachToEach(list(self.edt))
+
+	def compareEachToEach(self, list_group):
+		if len(list_group) == 0: #try except ?
+			print("Erreur, il faut des groupes à comparer")
+			exit(1)
+
+		if len(list_group) == 1:
+			return []
+		else:
+			res = []
+
+			group = list_group[0]
+			other_group = list_group[1:]
+
+			for group2 in other_group:
+				res.append({'groupe1' : group, 'groupe2' : group2, 'resultat' : self.compare([group, group2])})
+
+			
+			res.extend(self.compareEachToEach(other_group))
+
+			return res
+
+	def compareEachToEachAndPrint(self):
+		allResults = self.compareAllEachToEach()
+
+		for res in allResults:
+			print("Comparaison entre " + res['groupe1'] + " et " + res['groupe2'] + " :")
+			
+			results_tmp = [i for i,item in enumerate(res['resultat']) if item == 1]
+
+			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options)])
+
+			for e in results:
+				print(e)
+
+			print("\n")
 
 
 class Slot:
@@ -232,6 +270,9 @@ def main(tableauGroupe): # raccourci final d'utilisation
 		edt.addEdt("L1_245")
 		edt.addEdt("L1_248")
 		edt.compareAndPrint()
+		edt.addEdt("M1_Alma")
+		print("\n")
+		edt.compareEachToEachAndPrint()
 		edt.removeEdt("L1_245")
 		print("\n")
 		edt.compareAndPrint()
