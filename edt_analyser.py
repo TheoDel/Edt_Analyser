@@ -142,7 +142,7 @@ class Edt:
 			if len(res) == 0: 
 				res = self.edt[group]
 			else:
-				res = map(etbit, res, self.edt[group]) #No need to convert it in list here, because we'll just iterate over it (with an other map)
+				res = list(map(etbit, res, self.edt[group])) #Actually, we need to convert it in list, because we test len(res) after
 
 		return list(res) #Must be convert here, because we want to return a list, and not an iterators (map object)
 
