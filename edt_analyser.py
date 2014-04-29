@@ -74,7 +74,7 @@ class Edt:
 
 	def __init__(self, list_option):
 		self.startWeek = 2 #Semaine de départ
-		self.endWeek = 20 #Semaine de fin
+		self.endWeek = 24 #Semaine de fin
 		self.nbWeek = self.endWeek - self.startWeek + 1
 		self.nbDayInWeek = 6 #Nombre de jour par semaine
 		self.nbSlotInDay = 8 #Nombre de créneaux par jour
