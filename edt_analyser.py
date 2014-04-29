@@ -22,6 +22,7 @@ try:
 	# requêtes HTTP
 	import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour
 	# demander un mot de passe
+	import sys
 except ImportError:
 	raise ImportError("Modules are required to run this program. Try `pip install icalendar requests`.")
 	exit
@@ -262,23 +263,25 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
 
 
 
-def main(tableauGroupe): # raccourci final d'utilisation
+def main(list_group): # raccourci final d'utilisation
 	try:
 		option = Option([18], [2,3], [0,1,2,4,5,6])
 		option2 = Option([15], [1], [0,1,2,4,5,6])
 		edt = Edt([option, option2])
-		edt.addEdt("L1_245")
-		edt.addEdt("L1_248")
+
+		for group in list_group:
+			edt.addEdt(group)
+
 		edt.compareAndPrint()
-		edt.addEdt("M1_Alma")
 		print("\n")
 		edt.compareEachToEachAndPrint()
-		edt.removeEdt("L1_245")
-		print("\n")
-		edt.compareAndPrint()
+
 	except (KeyboardInterrupt, SystemExit):
 		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
                 
-# main(["L1_245", "L1_247", "L1_248", "L1_243K", "L2_401", "L2_402",
-#       "L2_419", "M1_Alma", "M1_Atal", "M1_Oro"])
-main(["L1_245", "L1_248"])
+
+if len(sys.argv) > 1:
+	print(sys.argv[1:])
+	main(sys.argv[1:])
+else:
+	main(["L1_245", "L1_248"])
