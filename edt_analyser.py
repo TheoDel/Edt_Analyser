@@ -282,30 +282,49 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
         return x & y
 
 
+class Interface:
+	def __init__(self):
+		try:
+			self.edt = Edt()
+			self.wait()
+		except (KeyboardInterrupt, SystemExit):
+			exit(1) # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
 
-def main(list_group): # raccourci final d'utilisation
-	try:
+
+	def launch(self, list_group):
 		option = Option([18], [2,3], [0,1,2,4,5,6])
 		option2 = Option([15], [1], [0,1,2,4,5,6])
 
-		edt = Edt()
-
-		edt.addOption(option)
-		edt.addOption(option2)
+		self.edt.addOption(option)
+		self.edt.addOption(option2)
 
 		for group in list_group:
-			edt.addEdt(group)
+			self.edt.addEdt(group)
 
-		edt.compareAndPrint()
+		self.edt.compareAndPrint()
 		print("\n")
-		edt.compareEachToEachAndPrint()
+		self.edt.compareEachToEachAndPrint()		
 
-	except (KeyboardInterrupt, SystemExit):
-		exit # quitte sans rien dire pour les évènements Ctrl-C, Ctrl-Q
+
+	def wait(self):
+		command = ""
+		while not (command == 'q' or command == "quit"):
+			command = input(">> ")
+
+			if command == 'h' or command == "help":
+				print("Interface en cours de création !")
+				print("Tapez h ou help pour voir ce message encore une fois.")
+				print("Tapez q ou quit pour quitter.")
+				print("Tapez l ou launch pour lancer le programme.")
+			elif command == 'l' or command == "launch":	
+				if len(sys.argv) > 1:
+					print(sys.argv[1:])
+					self.launch(sys.argv[1:])
+				else:
+					self.launch(["L1_245", "L1_248"])
+			else:
+				print("Cette commande n'existe pas. Tapez h ou help pour plus d'information")
                 
 
-if len(sys.argv) > 1:
-	print(sys.argv[1:])
-	main(sys.argv[1:])
-else:
-	main(["L1_245", "L1_248"])
+
+interface = Interface()
