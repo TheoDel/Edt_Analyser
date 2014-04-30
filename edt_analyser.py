@@ -73,7 +73,7 @@ class Connexion:
 
 class Edt:
 
-	def __init__(self, list_option):
+	def __init__(self):
 		self.startWeek = 2 #Semaine de départ
 		self.endWeek = 24 #Semaine de fin
 		self.nbWeek = self.endWeek - self.startWeek + 1
@@ -87,7 +87,7 @@ class Edt:
 
 		self.gestionDate = GestionDatetime()
 
-		self.options = list_option
+		self.options = []
 
 		self.convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
@@ -99,6 +99,14 @@ class Edt:
 	def removeEdt(self, group):
 		if group in self.edt:
 			del self.edt[group]
+
+	def addOption(self, option):
+		if option not in self.options:
+			self.options.append(option)
+
+	def removeOption(self, option):
+		if option in self.options:
+			self.options.remove(option)
 
 
 	def analyseEdt(self, edt): 
@@ -152,6 +160,10 @@ class Edt:
 			print("Erreur, il faut des groupes à comparer")
 			exit(1)
 
+		if len(self.options) == 0: #try except ?
+			print("Erreur, il faut définir des options")
+			exit(1)
+
 		return self.compare(self.edt)
 
 	
@@ -178,6 +190,14 @@ class Edt:
 			print(e)
 
 	def compareAllEachToEach(self):
+		if len(self.edt) == 0: #try except ?
+			print("Erreur, il faut des groupes à comparer")
+			exit(1)
+
+		if len(self.options) == 0: #try except ?
+			print("Erreur, il faut définir des options")
+			exit(1)
+
 		return self.compareEachToEach(list(self.edt))
 
 	def compareEachToEach(self, list_group):
@@ -267,7 +287,11 @@ def main(list_group): # raccourci final d'utilisation
 	try:
 		option = Option([18], [2,3], [0,1,2,4,5,6])
 		option2 = Option([15], [1], [0,1,2,4,5,6])
-		edt = Edt([option, option2])
+
+		edt = Edt()
+
+		edt.addOption(option)
+		edt.addOption(option2)
 
 		for group in list_group:
 			edt.addEdt(group)
