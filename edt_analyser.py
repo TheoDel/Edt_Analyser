@@ -66,7 +66,7 @@ class Connexion:
 						timeout=2)
 		if not 200 <= request.status_code < 300:
 			print("Error status while retrieving the ics file for group " + group + ".")
-			exit
+			exit(1)
 
 		return request
 
