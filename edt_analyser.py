@@ -327,14 +327,25 @@ class Interface:
 				print("Interface en cours de création !")
 				print("Tapez h ou help pour voir ce message encore une fois.")
 				print("Tapez q ou quit pour revenir au menu précédent.")
+				print("Tapez g ou group pour voir tous les groupes disponibles")
 				print("Tapez a ou add suivi du nom du groupe pour ajouter un groupe à analyser.")
-				print("Tapez r ou rm suivi du nom du groupe pour supprimer un groupe à analyser.")
+				print("Tapez r ou remove suivi du nom du groupe pour supprimer un groupe à analyser.")
 			elif command.split()[0] == 'a' or command.split()[0] == "add":
 				if len(command.split()) > 1:
 					group = command.split()[1]
 
 					if group in groups:
 						self.edt.addEdt(group)
+					else:
+						print("Ce groupe n'existe pas")
+				else:
+					print("Il faut donner un groupe")
+			elif command.split()[0] == 'r' or command.split()[0] == "remove":
+				if len(command.split()) > 1:
+					group = command.split()[1]
+
+					if group in groups:
+						self.edt.removeEdt(group)
 					else:
 						print("Ce groupe n'existe pas")
 				else:
@@ -370,7 +381,7 @@ class Interface:
 					self.launch(["L1_245", "L1_248"])
 			else:
 				print("Cette commande n'existe pas. Tapez h ou help pour plus d'information")
-                print()
+				print()
 
 
 interface = Interface()
