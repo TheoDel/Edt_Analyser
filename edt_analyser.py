@@ -330,6 +330,14 @@ class Interface:
 				print("Tapez g ou group pour voir tous les groupes disponibles")
 				print("Tapez a ou add suivi du nom du groupe pour ajouter un groupe à analyser.")
 				print("Tapez r ou remove suivi du nom du groupe pour supprimer un groupe à analyser.")
+			elif command == 'g' or command == 'group':
+				print("Voici tous les groupes disponibles : ")
+				print(groups)
+				print()
+				print("Voici les groupes déjà ajoutés : ")
+				groupAdded = list(self.edt.edt.keys())
+				groupAdded.sort()
+				print(groupAdded)
 			elif command.split()[0] == 'a' or command.split()[0] == "add":
 				if len(command.split()) > 1:
 					group = command.split()[1]
