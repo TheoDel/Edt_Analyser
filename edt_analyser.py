@@ -236,6 +236,10 @@ class Edt:
 
 			print("\n")
 
+	def groupAvailable(self):
+		groups =  list(self.connexion.correspondance_group_tab.keys())
+		groups.sort()
+		return groups
 
 class Slot:
 
@@ -303,19 +307,61 @@ class Interface:
 
 		self.edt.compareAndPrint()
 		print("\n")
-		self.edt.compareEachToEachAndPrint()		
+		self.edt.compareEachToEachAndPrint()
+
+	
+	def groups(self):
+		print("Interface de gestion des groupes")
+
+		print()
+
+		groups = self.edt.groupAvailable()
+
+		command = ""
+		while not (command == 'q' or command == "quit"):
+			command = input(">> ")
+
+			print()
+
+			if command == 'h' or command == "help":
+				print("Interface en cours de création !")
+				print("Tapez h ou help pour voir ce message encore une fois.")
+				print("Tapez q ou quit pour revenir au menu précédent.")
+				print("Tapez a ou add suivi du nom du groupe pour ajouter un groupe à analyser.")
+				print("Tapez r ou rm suivi du nom du groupe pour supprimer un groupe à analyser.")
+			elif command.split()[0] == 'a' or command.split()[0] == "add":
+				if len(command.split()) > 1:
+					group = command.split()[1]
+
+					if group in groups:
+						self.edt.addEdt(group)
+					else:
+						print("Ce groupe n'existe pas")
+				else:
+					print("Il faut donner un groupe")
+			else:
+				print("Cette commande n'existe pas. Tapez h ou help pour plus d'information")
+
+			print()
 
 
 	def wait(self):
 		command = ""
+		print()
 		while not (command == 'q' or command == "quit"):
 			command = input(">> ")
+
+			print()
 
 			if command == 'h' or command == "help":
 				print("Interface en cours de création !")
 				print("Tapez h ou help pour voir ce message encore une fois.")
 				print("Tapez q ou quit pour quitter.")
+				print("Tapez g ou group pour accéder à la gestion des groupes")
 				print("Tapez l ou launch pour lancer le programme.")
+				print()
+			elif command == 'g' or command == "group":
+				self.groups()
 			elif command == 'l' or command == "launch":	
 				if len(sys.argv) > 1:
 					print(sys.argv[1:])
@@ -324,7 +370,7 @@ class Interface:
 					self.launch(["L1_245", "L1_248"])
 			else:
 				print("Cette commande n'existe pas. Tapez h ou help pour plus d'information")
-                
+                print()
 
 
 interface = Interface()
