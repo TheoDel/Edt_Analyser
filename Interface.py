@@ -52,8 +52,14 @@ class Interface:
 									'info' : {'fct' : lambda : self.infoGroups(), 'args' : 0, 'help' : "afficher des informations sur les groupes"}
 								})
 
+		self.menuOption = Menu("Interface de gestion des options",
+								{
+									'add' : {'fct' : lambda w,d,s : self.addOption(w,d,s), 'args' : 3, 'help' : "ajouter une option"}
+								})
+
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
 								{
+									'option' : {'fct' : lambda : self.menuOption.wait(), 'args' : 0, 'help' : "gérer les options"},
 									'groups' : {'fct' : lambda : self.menuGroups.wait(), 'args' : 0, 'help' : "gérer les groupes"},
 									'launch' : {'fct' : lambda : self.edt.compareAndPrint(), 'args' : 0, 'help' : "lancer le programme"}
 								})
@@ -73,6 +79,16 @@ class Interface:
 		print("Groupes déjà ajoutés :")
 		print(groupsAdded)
 
+	def addOption(self, weeks, days, slots):
+		listWeek = [int(w) for w in weeks.split(',')]
+		listDay = [int(d) for d in days.split(',')]
+		listSlot = [int(s) for s in slots.split(',')]
 
+		option = edt_analyser.Option(listWeek, listDay, listSlot)
+		self.edt.addOption(option)
+
+		for o in self.edt.options:
+			print(o.listWeek)
+		
 		
 Interface()
