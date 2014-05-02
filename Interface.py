@@ -34,7 +34,7 @@ class Menu:
 			elif command[0] == 'q' or command[0] == 'quit':
 				print("Retour au menu précédent")
 			else:
-				print("Cette commande n'existe pas")
+				print("Cette commande n'existe pas, tapez h ou help pour plus d'informations")
 
 
 class Interface:
@@ -48,7 +48,8 @@ class Interface:
 		self.menuGroups = Menu("Interface de gestion des groupes",
 								{
 									'add' : {'fct' : lambda g : self.edt.addEdt(g), 'args' : 1, 'help' : "ajouter un groupe"},
-									'remove' : {'fct' : lambda g : self.edt.removeEdt(g), 'args' : 1, 'help' : "enlever un groupe"}
+									'remove' : {'fct' : lambda g : self.edt.removeEdt(g), 'args' : 1, 'help' : "enlever un groupe"},
+									'info' : {'fct' : lambda : self.infoGroups(), 'args' : 0, 'help' : "afficher des informations sur les groupes"}
 								})
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
@@ -58,6 +59,20 @@ class Interface:
 								})
 
 		self.menuInterface.wait()
+
+		print("Au revoir !")
+
+
+	def infoGroups(self):
+		groupsAvailable = self.edt.groupAvailable()
+		groupsAdded = list(self.edt.edt.keys())
+		groupsAdded.sort()
+
+		print("Groupes disponibles :")
+		print(groupsAvailable)
+		print("Groupes déjà ajoutés :")
+		print(groupsAdded)
+
 
 		
 Interface()
