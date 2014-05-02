@@ -42,8 +42,8 @@ class Interface:
 		self.edt = edt_analyser.Edt()
 		option = edt_analyser.Option([18], [2,3], [0,1,2,4,5,6])
 		option2 = edt_analyser.Option([15], [1], [0,1,2,4,5,6])
-		self.edt.addOption(option)
-		self.edt.addOption(option2)
+		self.edt.addOption("1", option)
+		self.edt.addOption("2", option2)
 
 		self.menuGroups = Menu("Interface de gestion des groupes",
 								{
@@ -54,7 +54,7 @@ class Interface:
 
 		self.menuOption = Menu("Interface de gestion des options",
 								{
-									'add' : {'fct' : lambda w,d,s : self.addOption(w,d,s), 'args' : 3, 'help' : "ajouter une option"}
+									'add' : {'fct' : lambda n, w,d,s : self.addOption(n, w,d,s), 'args' : 4, 'help' : "ajouter une option"}
 								})
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
@@ -79,16 +79,15 @@ class Interface:
 		print("Groupes déjà ajoutés :")
 		print(groupsAdded)
 
-	def addOption(self, weeks, days, slots):
+	def addOption(self, name, weeks, days, slots):
 		listWeek = [int(w) for w in weeks.split(',')]
 		listDay = [int(d) for d in days.split(',')]
 		listSlot = [int(s) for s in slots.split(',')]
 
 		option = edt_analyser.Option(listWeek, listDay, listSlot)
-		self.edt.addOption(option)
+		self.edt.addOption(name, option)
 
-		for o in self.edt.options:
-			print(o.listWeek)
+		print(self.edt.options)
 		
 		
 Interface()

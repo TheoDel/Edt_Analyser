@@ -87,7 +87,7 @@ class Edt:
 
 		self.gestionDate = GestionDatetime()
 
-		self.options = []
+		self.options = {}
 
 		self.convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
@@ -100,13 +100,13 @@ class Edt:
 		if group in self.edt:
 			del self.edt[group]
 
-	def addOption(self, option):
-		if option not in self.options:
-			self.options.append(option)
+	def addOption(self, name, option):
+		if name not in self.options:
+			self.options[name] = option
 
-	def removeOption(self, option):
-		if option in self.options:
-			self.options.remove(option)
+	def removeOption(self, name):
+		if name in self.options:
+			del self.options['name']
 
 
 	def analyseEdt(self, edt): 
@@ -184,7 +184,7 @@ class Edt:
 		
 		results_tmp = [i for i,item in enumerate(allResults) if item == 1]
 
-		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options)])
+		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options.values())])
 
 		for e in results:
 			print(e)
