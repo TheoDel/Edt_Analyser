@@ -54,7 +54,9 @@ class Interface:
 
 		self.menuOption = Menu("Interface de gestion des options",
 								{
-									'add' : {'fct' : lambda n, w,d,s : self.addOption(n, w,d,s), 'args' : 4, 'help' : "ajouter une option"}
+									'add' : {'fct' : lambda n, w,d,s : self.addOption(n, w,d,s), 'args' : 4, 'help' : "ajouter une option"},
+									'remove' : {'fct' : lambda n : self.edt.removeOption(n), 'args' : 1, 'help' : "supprimmer une option"},
+									'info' : {'fct' : lambda : self.infoOption(), 'args' : 0, 'help' : "afficher des informations sur les options"}
 								})
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
@@ -78,6 +80,10 @@ class Interface:
 		print(groupsAvailable)
 		print("Groupes déjà ajoutés :")
 		print(groupsAdded)
+
+	def infoOption(self):
+		for k,v in self.edt.options.items():
+			print(k, " : ", v.toString())
 
 	def addOption(self, name, weeks, days, slots):
 		listWeek = [int(w) for w in weeks.split(',')]
