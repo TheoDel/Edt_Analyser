@@ -1,8 +1,9 @@
 import edt_analyser
 
 class Menu:
-	def __init__(self, titre, commands):
+	def __init__(self, titre, commands, racc):
 		self.titre = titre
+		self.racc = racc
 		self.commands = commands
 
 
@@ -21,8 +22,8 @@ class Menu:
 		command = [""]
 
 		while not(command[0] == 'q' or command[0] == 'quit'):
-			print()			
-			command = input(">> ").split()
+			print()				
+			command = input(self.racc + ">> ").split()
 			print()
 
 			try:
@@ -52,14 +53,14 @@ class Interface:
 									'add' : {'fct' : lambda g : self.edt.addEdt(g), 'args' : 1, 'help' : "ajouter un groupe"},
 									'remove' : {'fct' : lambda g : self.edt.removeEdt(g), 'args' : 1, 'help' : "enlever un groupe"},
 									'info' : {'fct' : lambda : self.infoGroups(), 'args' : 0, 'help' : "afficher des informations sur les groupes"}
-								})
+								}, 'G ')
 
 		self.menuOption = Menu("Interface de gestion des options",
 								{
 									'add' : {'fct' : lambda n, w,d,s : self.addOption(n, w,d,s), 'args' : 4, 'help' : "ajouter une option"},
 									'remove' : {'fct' : lambda n : self.edt.removeOption(n), 'args' : 1, 'help' : "supprimmer une option"},
 									'info' : {'fct' : lambda : self.infoOption(), 'args' : 0, 'help' : "afficher des informations sur les options"}
-								})
+								}, 'O ')
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
 								{
@@ -67,7 +68,7 @@ class Interface:
 									'groups' : {'fct' : lambda : self.menuGroups.wait(), 'args' : 0, 'help' : "gérer les groupes"},
 									'launch' : {'fct' : lambda : self.edt.compareAndPrint(), 'args' : 0, 'help' : "lancer le programme"},
 									'compareEach' : {'fct' : lambda : self.edt.compareEachToEachAndPrint(), 'args' : 0, 'help' : "compare chaque groupe avec tous les autres"}
-								})
+								}, '')
 
 		self.menuInterface.wait()
 
