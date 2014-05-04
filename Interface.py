@@ -25,17 +25,19 @@ class Menu:
 			command = input(">> ").split()
 			print()
 
-			if command[0] == 'h' or command[0] == 'help':
-				self.help()
-			elif command[0] in self.commands:
-				value = self.commands[command[0]]
-				arguments = command[1:value['args']+1]
-				value['fct'](*arguments)
-			elif command[0] == 'q' or command[0] == 'quit':
-				print("Retour au menu précédent")
-			else:
-				print("Cette commande n'existe pas, tapez h ou help pour plus d'informations")
-
+			try:
+				if command[0] == 'h' or command[0] == 'help':
+					self.help()
+				elif command[0] in self.commands:
+					value = self.commands[command[0]]
+					arguments = command[1:value['args']+1]
+					value['fct'](*arguments)
+				elif command[0] == 'q' or command[0] == 'quit':
+					print("Retour au menu précédent")
+				else:
+					print("Cette commande n'existe pas, tapez h ou help pour plus d'informations")
+			except (KeyboardInterrupt):
+				print("\nCommande annulée")
 
 class Interface:
 	def __init__(self):
@@ -96,5 +98,9 @@ class Interface:
 
 		print(self.edt.options)
 		
-		
-Interface()
+
+try:		
+	Interface()
+except (KeyboardInterrupt, SystemExit):
+	print("\nAu revoir")
+	exit

@@ -158,11 +158,9 @@ class Edt:
 	def compareAll(self):
 		if len(self.edt) == 0: #try except ?
 			print("Erreur, il faut des groupes à comparer")
-			exit(1)
 
 		if len(self.options) == 0: #try except ?
 			print("Erreur, il faut définir des options")
-			exit(1)
 
 		return self.compare(self.edt)
 
@@ -192,18 +190,15 @@ class Edt:
 	def compareAllEachToEach(self):
 		if len(self.edt) == 0: #try except ?
 			print("Erreur, il faut des groupes à comparer")
-			exit(1)
 
 		if len(self.options) == 0: #try except ?
 			print("Erreur, il faut définir des options")
-			exit(1)
 
 		return self.compareEachToEach(list(self.edt))
 
 	def compareEachToEach(self, list_group):
 		if len(list_group) == 0: #try except ?
 			print("Erreur, il faut des groupes à comparer")
-			exit(1)
 
 		if len(list_group) == 1:
 			return []
