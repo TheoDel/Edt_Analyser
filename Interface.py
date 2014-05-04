@@ -63,7 +63,8 @@ class Interface:
 								{
 									'option' : {'fct' : lambda : self.menuOption.wait(), 'args' : 0, 'help' : "gérer les options"},
 									'groups' : {'fct' : lambda : self.menuGroups.wait(), 'args' : 0, 'help' : "gérer les groupes"},
-									'launch' : {'fct' : lambda : self.edt.compareAndPrint(), 'args' : 0, 'help' : "lancer le programme"}
+									'launch' : {'fct' : lambda : self.edt.compareAndPrint(), 'args' : 0, 'help' : "lancer le programme"},
+									'compareEach' : {'fct' : lambda : self.edt.compareEachToEachAndPrint(), 'args' : 0, 'help' : "compare chaque groupe avec tous les autres"}
 								})
 
 		self.menuInterface.wait()

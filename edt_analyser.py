@@ -229,7 +229,7 @@ class Edt:
 			
 			results_tmp = [i for i,item in enumerate(res['resultat']) if item == 1]
 
-			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options)])
+			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options.values())])
 
 			for e in results:
 				print(e)
