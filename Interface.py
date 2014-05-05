@@ -7,13 +7,15 @@ class Menu:
 		self.commands = commands
 
 
-	def help(self):
-		print(self.titre)
-		print("Tapez q ou quit pour retourner au menu précédent")
-		print("Tapez h ou help pour revoir ce message")
-		for k,v in self.commands.items():
-			print("Tapez", k, "pour", v['help'])
-
+	def help(self, command = None):
+		if not command:
+			print(self.titre)
+			print("Tapez q ou quit pour retourner au menu précédent")
+			print("Tapez h ou help pour revoir ce message")
+			for k,v in self.commands.items():
+				print("Tapez", k, "pour", v['help'])
+		else:
+			print(self.commands[command]['details'])
 
 	def wait(self):
 
@@ -28,7 +30,10 @@ class Menu:
 
 			try:
 				if command[0] == 'h' or command[0] == 'help':
-					self.help()
+					if len(command) > 1:
+						self.help(command[1])
+					else:
+						self.help()
 				elif command[0] in self.commands:
 					value = self.commands[command[0]]
 					arguments = command[1:value['args']+1]
