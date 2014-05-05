@@ -106,7 +106,7 @@ class Edt:
 
 	def removeOption(self, name):
 		if name in self.options:
-			del self.options['name']
+			del self.options[name]
 
 
 	def analyseEdt(self, edt): 
