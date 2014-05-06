@@ -37,13 +37,20 @@ class Menu:
 				elif command[0] in self.commands:
 					value = self.commands[command[0]]
 					arguments = command[1:value['args']+1]
-					value['fct'](*arguments)
+
+					if len(arguments) != value['args'] :
+						print("Erreur, cette commande nécéssite", value['args'], "arguments.")
+					else:
+						value['fct'](*arguments)
+
 				elif command[0] == 'q' or command[0] == 'quit':
 					print("Retour au menu précédent")
 				else:
 					print("Cette commande n'existe pas, tapez h ou help pour plus d'informations")
 			except (KeyboardInterrupt):
 				print("\nCommande annulée")
+			except (Exception):
+				print("Erreur lors de l'éxécution")
 
 class Interface:
 	def __init__(self):
