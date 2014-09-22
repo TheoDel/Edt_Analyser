@@ -54,8 +54,7 @@ class Connexion:
 		self.login = input("Login : ")
 		self.mdp = getpass.getpass("Mot de passe : ")
 
-		self.correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_401" : "g93283", "L2_402" : "g115774", "L2_419" : "g7127","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
-
+		self.correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_301" : "g19843", "L2_302" : "g7094", "L2_319" : "g19844","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057"}
 
 	def connect(self, group):
 		code_group = self.correspondance_group_tab[group]
@@ -64,6 +63,7 @@ class Connexion:
 						'https://edt.univ-nantes.fr/sciences/' + code_group + '.ics',
 						auth=(self.login, self.mdp),
 						timeout=2)
+
 		if not 200 <= request.status_code < 300:
 			print("Error status while retrieving the ics file for group " + group + ".")
 			exit(1)
@@ -74,8 +74,8 @@ class Connexion:
 class Edt:
 
 	def __init__(self):
-		self.startWeek = 2 #Semaine de départ
-		self.endWeek = 24 #Semaine de fin
+		self.startWeek = 37 #Semaine de départ
+		self.endWeek = 51 #Semaine de fin
 		self.nbWeek = self.endWeek - self.startWeek + 1
 		self.nbDayInWeek = 6 #Nombre de jour par semaine
 		self.nbSlotInDay = 8 #Nombre de créneaux par jour
