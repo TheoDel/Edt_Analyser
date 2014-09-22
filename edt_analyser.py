@@ -258,7 +258,7 @@ defaultSlots = [
 				(4, Slot(time(14), time(15,20))),
 				(5, Slot(time(15,30), time(16,50))),
 				(6, Slot(time(17), time(18,20))),
-				(7, Slot(time(18,20), time(19,30)))
+				(7, Slot(time(18,30), time(19,30)))
 ]
 
 
