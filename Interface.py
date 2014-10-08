@@ -1,4 +1,5 @@
-import edt_analyser
+import Edt
+import Option
 
 class Menu:
 	def __init__(self, titre, commands, racc):
@@ -54,11 +55,7 @@ class Menu:
 
 class Interface:
 	def __init__(self):
-		self.edt = edt_analyser.Edt()
-		option = edt_analyser.Option([18], [2,3], [0,1,2,4,5,6])
-		option2 = edt_analyser.Option([15], [1], [0,1,2,4,5,6])
-		self.edt.addOption("1", option)
-		self.edt.addOption("2", option2)
+		self.edt = Edt.Edt()
 
 		self.menuGroups = Menu("Interface de gestion des groupes",
 								{
@@ -177,7 +174,7 @@ class Interface:
 		listDay = [int(d) for d in days.split(',')]
 		listSlot = [int(s) for s in slots.split(',')]
 
-		option = edt_analyser.Option(listWeek, listDay, listSlot)
+		option = Option.Option(listWeek, listDay, listSlot)
 		self.edt.addOption(name, option)
 
 		print(self.edt.options)
