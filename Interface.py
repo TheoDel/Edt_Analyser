@@ -139,12 +139,18 @@ class Interface:
 													"Ne prend aucun argument.\n\n"
 													"Appelle la fonction compareAndPrint() et trouve les créneaux libres pour tous les groupes ajoutés."
 												},
-									'compareEach' : {'fct' : lambda : self.edt.compareEachToEachAndPrint(), 'args' : 0, 'help' : "compare chaque groupe avec tous les autres",
+									'compareEach' : {'fct' : lambda : self.edt.compareEachToEachAndPrint(), 'args' : 0, 'help' : "comparer chaque groupe avec tous les autres",
 														'details' : 
 															"Compare chaque groupe avec tous les autres.\n"
 															"Ne prend aucun argument.\n\n"
 															"Appelle la fonction compareEachToEachAndPrint() et trouve les créneaux libres pour chaque pair de groupe possible."
-													}
+													},
+									'listAll' : {'fct' : lambda : self.edt.listForAllGroupsAndPrint(), 'args' : 0, 'help' : "afficher les créneaux de chaque groupe un à un",
+														'details' : 
+															"Affiche les créneaux de chaque groupe un à un.\n"
+															"Ne prend aucun argument.\n\n"
+															"Appelle la fonction listForAllGroupsAndPrint() et affiche les créneaux libres de chaque groupe."
+												}
 								}, '')
 
 		self.menuInterface.wait()

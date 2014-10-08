@@ -230,6 +230,20 @@ class Edt:
 				print(e)
 
 			print("\n")
+			
+	def listForAllGroupsAndPrint(self):
+	
+		for group, group_edt in self.edt.items():
+			print("Créneaux pour " + group + " :")
+			
+			results_tmp = [i for i,item in enumerate(group_edt) if item == 1]
+
+			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options.values())])
+
+			for e in results:
+				print(e)
+			
+			print("\n")
 
 	def groupAvailable(self):
 		groups =  list(self.connexion.correspondance_group_tab.keys())
