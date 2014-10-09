@@ -28,4 +28,14 @@ class Connexion:
 			exit(1)
 
 		return request
-
+	
+		""" Ajoute un nouveau groupe dans la liste des groupes disponibles """
+	def addAvailableGroup(self, group, code):
+		if group not in self.correspondance_group_tab:
+			self.correspondance_group_tab[group] = code
+			
+	""" Supprime un groupe dans la liste des groupes disponibles """
+	def removeAvailableGroup(self, group):
+		if group in self.correspondance_group_tab:
+			del self.correspondance_group_tab[group]
+			

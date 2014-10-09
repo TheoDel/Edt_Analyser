@@ -54,8 +54,14 @@ class Edt:
 		groups.sort()
 		return groups
 		
+	""" Ajoute un nouveau groupe dans la liste des groupes disponibles """
+	def addAvailableGroup(self, group, code):
+		self.connexion.addAvailableGroup(group, code)
 		
 		
+	""" Supprime un groupe dans la liste des groupes disponibles """
+	def removeAvailableGroup(self, group):
+		self.connexion.removeAvailableGroup(group)
 			
 
 	""" Analyse l'emploi du temps donné en paramètre 
