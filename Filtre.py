@@ -1,4 +1,4 @@
-class Option: #Filter slots we want
+class Filtre: #Filter slots we want
 	
 	def __init__(self, listWeek, listDay, listSlot):
 		self.listWeek = listWeek

@@ -1,7 +1,7 @@
 import GestionDatetime
 import Connexion
 import Slot
-import Option
+import Filtre
 from icalendar import Calendar # support des .ics
 
 class Edt:
@@ -20,26 +20,26 @@ class Edt:
 
 		self.gestionDate = GestionDatetime.GestionDatetime()
 
-		self.options = {}
+		self.filtres = {}
 
 		self.convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
-	def addEdt(self, group):
+	def addGroup(self, group):
 		if group not in self.edt:
 			e = self.connexion.connect(group)
 			self.edt[group] = self.analyseEdt(e)
 
-	def removeEdt(self, group):
+	def removeGroup(self, group):
 		if group in self.edt:
 			del self.edt[group]
 
-	def addOption(self, name, option):
-		if name not in self.options:
-			self.options[name] = option
+	def addFiltre(self, name, filtre):
+		if name not in self.filtres:
+			self.filtres[name] = filtre
 
-	def removeOption(self, name):
-		if name in self.options:
-			del self.options[name]
+	def removeFiltre(self, name):
+		if name in self.filtres:
+			del self.filtres[name]
 
 
 	def analyseEdt(self, edt): 
@@ -92,8 +92,8 @@ class Edt:
 		if len(self.edt) == 0: #try except ?
 			print("Erreur, il faut des groupes à comparer")
 
-		if len(self.options) == 0: #try except ?
-			print("Erreur, il faut définir des options")
+		if len(self.filtres) == 0: #try except ?
+			print("Erreur, il faut définir des filtres")
 
 		return self.compare(self.edt)
 
@@ -115,7 +115,7 @@ class Edt:
 		
 		results_tmp = [i for i,item in enumerate(allResults) if item == 1]
 
-		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options.values())])
+		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(filtre.isIn(item) for filtre in self.filtres.values())])
 
 		for e in results:
 			print(e)
@@ -124,8 +124,8 @@ class Edt:
 		if len(self.edt) == 0: #try except ?
 			print("Erreur, il faut des groupes à comparer")
 
-		if len(self.options) == 0: #try except ?
-			print("Erreur, il faut définir des options")
+		if len(self.filtres) == 0: #try except ?
+			print("Erreur, il faut définir des filtres")
 
 		return self.compareEachToEach(list(self.edt))
 
@@ -157,7 +157,7 @@ class Edt:
 			
 			results_tmp = [i for i,item in enumerate(res['resultat']) if item == 1]
 
-			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options.values())])
+			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(filtre.isIn(item) for filtre in self.filtres.values())])
 
 			for e in results:
 				print(e)

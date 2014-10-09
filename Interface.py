@@ -1,5 +1,5 @@
 import Edt
-import Option
+import Filtre
 
 class Menu:
 	def __init__(self, titre, commands, racc):
@@ -50,8 +50,8 @@ class Menu:
 					print("Cette commande n'existe pas, tapez h ou help pour plus d'informations")
 			except (KeyboardInterrupt):
 				print("\nCommande annulée")
-			except (Exception):
-				print("Erreur lors de l'éxécution")
+			except Exception as e:
+				print("Erreur lors de l'éxécution : " + format(e))
 
 class Interface:
 	def __init__(self):
@@ -59,14 +59,14 @@ class Interface:
 
 		self.menuGroups = Menu("Interface de gestion des groupes",
 								{
-									'add' : {'fct' : lambda g : self.edt.addEdt(g), 'args' : 1, 'help' : "ajouter un groupe",
+									'add' : {'fct' : lambda g : self.edt.addGroup(g), 'args' : 1, 'help' : "ajouter un groupe",
 											'details' : 
 												"Ajoute un groupe à analyser.\n"
 												"Prend un argument : le groupe.\n\n"
 												"Vous pouvez voir les groupes disponibles en tapant la commande info dans l'interface de gestion des groupes.\n\n"
 												"Exemple : add L1_245"
 											},
-									'remove' : {'fct' : lambda g : self.edt.removeEdt(g), 'args' : 1, 'help' : "enlever un groupe",
+									'remove' : {'fct' : lambda g : self.edt.removeGroup(g), 'args' : 1, 'help' : "enlever un groupe",
 												'details' : 
 													"Enlève un groupe à analyser.\n"
 													"Prend un argument : le groupe.\n\n"
@@ -81,14 +81,15 @@ class Interface:
 											}
 								}, 'Groups ')
 
-		self.menuOption = Menu("Interface de gestion des options",
+		self.menuFiltre = Menu("Interface de gestion des filtres",
 								{
-									'add' : {'fct' : lambda n, w,d,s : self.addOption(n, w,d,s), 'args' : 4, 'help' : "ajouter une option",
+									'add' : {'fct' : lambda n, w,d,s : self.addFiltre(n, w,d,s), 'args' : 4, 'help' : "ajouter un filtre",
 											'details' : 
-												"Ajoute une option pour l'analyse.\n"
-												"Prend 4 arguments : le nom donné à l'option, les semaines à analyser, les jours et les créneaux.\n\n"
-												"On donne un nom à l'option pour la retrouver après.\n"
-												"Une option comprends : \n \t- un tableau de semaines, données par leurs numéros dans l'année\n"
+												"Ajoute un filtre pour l'analyse.\n"
+												"Prend 4 arguments : le nom donné au filtre, les semaines à analyser, les jours et les créneaux.\n\n"
+												"On donne un nom au filtre pour le retrouver après.\n"
+												"Un filtre comprend : \n"
+												"\t- un tableau de semaines, données par leurs numéros dans l'année\n"
 												"\t- un tableau de jours, donnés par leurs numéros dans la semaine (de 1 à 6, le dimanche n'est pas analysable)\n"
 												"\t- un tableau de créneaux, numérotés de 0 à 7 :\n"
 												"\t\t 0 : de 8h à 9h20\n"
@@ -99,30 +100,30 @@ class Interface:
 												"\t\t 5 : de 15h30 à 16h50\n"
 												"\t\t 6 : de 17h à 18h20\n"
 												"\t\t 7 : de 18h30 à 19h30\n\n"
-												"Tapez la commande info pour les options déjà ajoutées.\n\n"
+												"Tapez la commande info pour les filtres déjà ajoutés.\n\n"
 												"Exemple : add semaine18 18 2,3 0,1 = Les créneaux de 8h à 11h le mardi et le mercredi de la semaine 18"
 											},
-									'remove' : {'fct' : lambda n : self.edt.removeOption(n), 'args' : 1, 'help' : "supprimmer une option",
+									'remove' : {'fct' : lambda n : self.edt.removeFiltre(n), 'args' : 1, 'help' : "supprimmer un filtre",
 												'details' :
-													"Supprime une option pour l'analyse.\n"
-													"Prend 1 argument : le nom de l'option.\n\n"
-													"Supprime l'option dont le nom est passé en paramètre.\n"
-													"Vous pouvez connaître les noms des options ajoutées en tapant la commande info.\n\n"
+													"Supprime un filtre pour l'analyse.\n"
+													"Prend 1 argument : le nom du filtre.\n\n"
+													"Supprime le filtre dont le nom est passé en paramètre.\n"
+													"Vous pouvez connaître les noms des filtres ajoutés en tapant la commande info.\n\n"
 													"Exemple : remove semaine18\n"
 												},
-									'info' : {'fct' : lambda : self.infoOption(), 'args' : 0, 'help' : "afficher des informations sur les options",
+									'info' : {'fct' : lambda : self.infoFiltre(), 'args' : 0, 'help' : "afficher des informations sur les filtres",
 												'details' :
-													"Affiche des informations sur les options.\n"
+													"Affiche des informations sur les filtres.\n"
 													"Ne prend aucun argument.\n\n"
-													"Donne le nom et le détails des options ajoutées pour l'analyse."
+													"Donne le nom et le détails des filtres ajoutés pour l'analyse."
 											}
-								}, 'Options ')
+								}, 'Filtres ')
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
 								{
-									'option' : {'fct' : lambda : self.menuOption.wait(), 'args' : 0, 'help' : "gérer les options",
+									'filtre' : {'fct' : lambda : self.menuFiltre.wait(), 'args' : 0, 'help' : "gérer les filtres",
 												'details' :
-													"Amène à l'interface de gestion des options.\n"
+													"Amène à l'interface de gestion des filtres.\n"
 													"Ne prend aucun argument."
 												},
 									'groups' : {'fct' : lambda : self.menuGroups.wait(), 'args' : 0, 'help' : "gérer les groupes",
@@ -165,19 +166,19 @@ class Interface:
 		print("Groupes déjà ajoutés :")
 		print(groupsAdded)
 
-	def infoOption(self):
-		for k,v in self.edt.options.items():
+	def infoFiltre(self):
+		for k,v in self.edt.filtres.items():
 			print(k, " : ", v.toString())
 
-	def addOption(self, name, weeks, days, slots):
+	def addFiltre(self, name, weeks, days, slots):
 		listWeek = [int(w) for w in weeks.split(',')]
 		listDay = [int(d) for d in days.split(',')]
 		listSlot = [int(s) for s in slots.split(',')]
 
-		option = Option.Option(listWeek, listDay, listSlot)
-		self.edt.addOption(name, option)
+		filtre = Filtre.Filtre(listWeek, listDay, listSlot)
+		self.edt.addFiltre(name, filtre)
 
-		print(self.edt.options)
+		print(self.edt.filtres)
 		
 
 try:		
