@@ -3,12 +3,16 @@ import getpass # permet d'utilier getpass.getpass([prompt[, stream]]) pour deman
 
 class Connexion:
 	
+	""" Demande le login et le mot de passe à l'initilisation de la classe et initialise les groupes disponibles
+		Les mêmes identifiants seront utilisés pour tous les appels à connect()
+	"""
 	def __init__(self):
 		self.login = input("Login : ")
 		self.mdp = getpass.getpass("Mot de passe : ")
 
 		self.correspondance_group_tab = {"L3_Info" : "g11529", "M1_Atal" : "g78030", "L2_301" : "g19843", "L2_302" : "g7094", "L2_319" : "g19844","M1_Alma" : "g6935","M1_Oro" : "g9238", "L1_245" : "g51728", "L1_247" : "g94501", "L1_248" : "g115113", "L1_243K" : "g7057", "M2_Alma" : "g6984", "M2_Atal" : "g78125", "M2_Oro" : "g16684"}
 
+	""" Se connecte à l'emploi du temps en ligne et télécharge celui du groupe passé en paramètre """
 	def connect(self, group):
 		code_group = self.correspondance_group_tab[group]
 
