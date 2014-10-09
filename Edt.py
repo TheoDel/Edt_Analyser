@@ -48,6 +48,15 @@ class Edt:
 		if name in self.filtres:
 			del self.filtres[name]
 			
+	""" Renvoie la liste des groupes disponibles """
+	def groupAvailable(self):
+		groups =  list(self.connexion.correspondance_group_tab.keys())
+		groups.sort()
+		return groups
+		
+		
+		
+			
 
 	""" Analyse l'emploi du temps donné en paramètre 
 		Extrait les informations de l'emploi du temps au format ics
@@ -76,6 +85,11 @@ class Edt:
 
 				        
 		return slots
+		
+		
+		
+		
+		
 
 	""" Retourne un index à partir d'une date
 		L'index correspond à l'index dans un tableau d'emploi du temps du premier créneau du jour de la date passée en paramètre
@@ -87,6 +101,25 @@ class Edt:
 		index += (isodate[2] - 1) * self.nbSlotInDay
 
 		return index
+		
+		
+	""" Recréé un triplet (semaine, jour, créneau) à partir de l'index du créneau dans un tableau d'emploi du temps """	
+	def indexToResult(self, index):
+		week = int(index / (self.nbDayInWeek * self.nbSlotInDay)) + self.startWeek
+		day = int((index % (self.nbDayInWeek * self.nbSlotInDay)) / self.nbSlotInDay) + 1
+		time = int((index % (self.nbDayInWeek * self.nbSlotInDay)) % self.nbSlotInDay)
+
+		return week, day, time
+		
+		
+	""" Affiche la date du créneau à partir du triplet (semaine, jour, créneau) """
+	def resultToString(self, result):
+		slot = [s for i,s in Slot.defaultSlots if i == result[2]][0]
+
+		return "Semaine " + str(result[0]) + " " + self.convertDay[result[1]-1] + " " + slot.toString()
+		
+		
+		
 
 
 	""" Compare entre eux une liste de groupes
@@ -121,20 +154,6 @@ class Edt:
 
 		return self.compare(self.edt)
 
-
-	""" Recréé un triplet (semaine, jour, créneau) à partir de l'index du créneau dans un tableau d'emploi du temps """	
-	def indexToResult(self, index):
-		week = int(index / (self.nbDayInWeek * self.nbSlotInDay)) + self.startWeek
-		day = int((index % (self.nbDayInWeek * self.nbSlotInDay)) / self.nbSlotInDay) + 1
-		time = int((index % (self.nbDayInWeek * self.nbSlotInDay)) % self.nbSlotInDay)
-
-		return week, day, time
-
-	""" Affiche la date du créneau à partir du triplet (semaine, jour, créneau) """
-	def resultToString(self, result):
-		slot = [s for i,s in Slot.defaultSlots if i == result[2]][0]
-
-		return "Semaine " + str(result[0]) + " " + self.convertDay[result[1]-1] + " " + slot.toString()
 
 
 	""" Compare les groupes qui ont été ajouté, puis affiche les résultats """
@@ -216,12 +235,6 @@ class Edt:
 				print(e)
 			
 			print("\n")
-
-	""" Renvoie la liste des groupes disponibles """
-	def groupAvailable(self):
-		groups =  list(self.connexion.correspondance_group_tab.keys())
-		groups.sort()
-		return groups
 
 
 
