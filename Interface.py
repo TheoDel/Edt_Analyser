@@ -117,13 +117,32 @@ class Interface:
 													"Ne prend aucun argument.\n\n"
 													"Donne le nom et le détails des filtres ajoutés pour l'analyse."
 											}
-								}, 'Filtres ')
+								}, 'Filtres')
+								
+		self.menuOption = Menu("Interface de gestion des options",
+								{
+									'addAvailableGroup' : {'fct' : lambda g,c : self.edt.addAvailableGroup(g,c), 'args' : 2, 'help' : "ajouter un groupe dans la liste des groupes disponibles",
+															'details' : 
+																"Permet d'ajouter un groupe disponible pour les analyses.\n"
+																"Nécessite un nom de groupe, et le code de sa page edt."
+															},
+									'removeAvailableGroup' : {'fct' : lambda g : self.edt.removeAvailableGroup(g), 'args' : 1, 'help' : "supprimer un groupe de la liste des groupes disponibles",
+																'details' :
+																		"Permet de supprimer un groupe disponible pour les analyses.\n"
+																		"Nécessite le nom du groupe à supprimer."
+																}
+								}, 'Options')
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
 								{
 									'filtre' : {'fct' : lambda : self.menuFiltre.wait(), 'args' : 0, 'help' : "gérer les filtres",
 												'details' :
 													"Amène à l'interface de gestion des filtres.\n"
+													"Ne prend aucun argument."
+												},
+									'option' : {'fct' : lambda : self.menuOption.wait(), 'args' : 0, 'help' : "gérer les options",
+												'details' :
+													"Amène à l'interface des options.\n"
 													"Ne prend aucun argument."
 												},
 									'groups' : {'fct' : lambda : self.menuGroups.wait(), 'args' : 0, 'help' : "gérer les groupes",
