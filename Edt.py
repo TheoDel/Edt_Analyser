@@ -125,6 +125,12 @@ class Edt:
 		return "Semaine " + str(result[0]) + " " + self.convertDay[result[1]-1] + " " + slot.toString()
 		
 		
+
+
+	def filtre(self, list_result):
+		return [result for result in list_result if any(filtre.isIn(result) for filtre in self.filtres.values())]
+		
+
 		
 
 
@@ -166,9 +172,11 @@ class Edt:
 	def compareAndPrint(self):
 		allResults = self.compareAll()
 		
-		results_tmp = [i for i,item in enumerate(allResults) if item == 1]
+		results_index = [i for i,item in enumerate(allResults) if item == 1]
+		results_format = [item for item in map(self.indexToResult, results_index)]
+		results_filtre = self.filtre(results_format)
 
-		results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(filtre.isIn(item) for filtre in self.filtres.values())])
+		results = map(self.resultToString, results_filtre)
 
 		for e in results:
 			print(e)
@@ -218,9 +226,11 @@ class Edt:
 		for res in allResults:
 			print("Comparaison entre " + res['groupe1'] + " et " + res['groupe2'] + " :")
 			
-			results_tmp = [i for i,item in enumerate(res['resultat']) if item == 1]
+			results_index = [i for i,item in enumerate(res['resultat']) if item == 1]
+			results_format = [item for item in map(self.indexToResult, results_index)]
+			results_filtre = self.filtre(results_format)
 
-			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(filtre.isIn(item) for filtre in self.filtres.values())])
+			results = map(self.resultToString, results_filtre)
 
 			for e in results:
 				print(e)
@@ -233,9 +243,11 @@ class Edt:
 		for group, group_edt in self.edt.items():
 			print("Créneaux pour " + group + " :")
 			
-			results_tmp = [i for i,item in enumerate(group_edt) if item == 1]
-
-			results = map(self.resultToString, [item for item in map(self.indexToResult, results_tmp) if any(option.isIn(item) for option in self.options.values())])
+			results_index = [i for i,item in enumerate(group_edt) if item == 1]
+			results_format = [item for item in map(self.indexToResult, results_index)]
+			results_filtre = self.filtre(results_format)
+			
+			results = map(self.resultToString, results_filtre)
 
 			for e in results:
 				print(e)
