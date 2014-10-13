@@ -130,6 +130,11 @@ class Edt:
 	def filtre(self, list_result):
 		return [result for result in list_result if any(filtre.isIn(result) for filtre in self.filtres.values())]
 		
+	def afficheResult(self, results):
+		results_string = map(self.resultToString, results)
+		for e in results_string:
+			print(e)
+		
 
 		
 
@@ -176,10 +181,7 @@ class Edt:
 		results_format = [item for item in map(self.indexToResult, results_index)]
 		results_filtre = self.filtre(results_format)
 
-		results = map(self.resultToString, results_filtre)
-
-		for e in results:
-			print(e)
+		self.afficheResult(results_filtre)
 			
 	
 	""" Compare les groupes passés en paramètres deux à deux
@@ -230,10 +232,7 @@ class Edt:
 			results_format = [item for item in map(self.indexToResult, results_index)]
 			results_filtre = self.filtre(results_format)
 
-			results = map(self.resultToString, results_filtre)
-
-			for e in results:
-				print(e)
+			self.afficheResult(results_filtre)
 
 			print("\n")
 			
@@ -247,10 +246,7 @@ class Edt:
 			results_format = [item for item in map(self.indexToResult, results_index)]
 			results_filtre = self.filtre(results_format)
 			
-			results = map(self.resultToString, results_filtre)
-
-			for e in results:
-				print(e)
+			self.afficheResult(results_filtre)
 			
 			print("\n")
 
