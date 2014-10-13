@@ -136,6 +136,12 @@ class Edt:
 			print(e)
 		
 
+	def filtreEtAffiche(self, list_results):
+		results_index = [i for i,item in enumerate(list_results) if item == 1]
+		results_format = [item for item in map(self.indexToResult, results_index)]
+		results_filtre = self.filtre(results_format)
+
+		self.afficheResult(results_filtre)
 		
 
 
@@ -177,11 +183,7 @@ class Edt:
 	def compareAndPrint(self):
 		allResults = self.compareAll()
 		
-		results_index = [i for i,item in enumerate(allResults) if item == 1]
-		results_format = [item for item in map(self.indexToResult, results_index)]
-		results_filtre = self.filtre(results_format)
-
-		self.afficheResult(results_filtre)
+		self.filtreEtAffiche(allResults)
 			
 	
 	""" Compare les groupes passés en paramètres deux à deux
@@ -228,11 +230,7 @@ class Edt:
 		for res in allResults:
 			print("Comparaison entre " + res['groupe1'] + " et " + res['groupe2'] + " :")
 			
-			results_index = [i for i,item in enumerate(res['resultat']) if item == 1]
-			results_format = [item for item in map(self.indexToResult, results_index)]
-			results_filtre = self.filtre(results_format)
-
-			self.afficheResult(results_filtre)
+			self.filtreEtAffiche(res['resultat'])
 
 			print("\n")
 			
@@ -242,11 +240,7 @@ class Edt:
 		for group, group_edt in self.edt.items():
 			print("Créneaux pour " + group + " :")
 			
-			results_index = [i for i,item in enumerate(group_edt) if item == 1]
-			results_format = [item for item in map(self.indexToResult, results_index)]
-			results_filtre = self.filtre(results_format)
-			
-			self.afficheResult(results_filtre)
+			self.filtreEtAffiche(group_edt)
 			
 			print("\n")
 
