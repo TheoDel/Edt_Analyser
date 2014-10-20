@@ -7,6 +7,15 @@ class Resultat:
 		self.nom = nom
 		self.result = [1]*(Option.option.nbWeek*Option.option.nbDayInWeek*Option.option.nbSlotInDay) #At the beggining, all the slots are free
 		
+	def __getitem__(self, key):
+		return self.result[key]
+		
+	def __setitem__(self, key, value):
+		if(value != 0 and value != 1):
+			raise ValueError("The value must be 0 or 1")
+		else:
+			self.result[key] = value
+		
 	def compare(self, other_result, nomComparaison):
 		return Resultat(nomComparaison, list(map(etbit, self.result, other_result)))
 
@@ -43,4 +52,4 @@ def indexToTriplet(index):
 def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
         return x & y
-        
+
