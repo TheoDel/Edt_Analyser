@@ -9,6 +9,8 @@ class Option:
 	
 	def __init__(self):
 		self.group_file = "group.data"
+		self.period_file = "period.data"
+		self.loadPeriod()
 	
 	def loadGroup(self):
 		group_dict = {}
@@ -30,4 +32,21 @@ class Option:
 			for group, code in new_group_dict.items():
 				writer.writerow([group, code])
 			
+	
+	def loadPeriod(self):
+		f = open(self.period_file, 'r')
+		
+		self.startWeek = int(f.readline())
+		self.endWeek = int(f.readline())
+		self.nbWeek = self.endWeek - self.startWeek +1
+		self.nbDayInWeek = int(f.readline())
+		self.nbSlotInDay = int(f.readline())
+		
+	
+	def savePeriod(self, newNbWeek, newNbDayInWeek, newNbSlotInDay):
+		f = open(self.period_file, 'w')
+		
+		f.write(str(newNbWeek) + "\n" + str(newNbDayInWeek) + "\n" + str(newNbSlotInDay))
+			
+	
 option = Option()
