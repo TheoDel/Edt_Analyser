@@ -23,8 +23,10 @@ class Resultat:
 		return res
 		
 		
+
+convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]		
+		
 def tripletToString(triplet):
-	convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 	slot = [s for i,s in Slot.defaultSlots if i == triplet[2]][0]
 
 	return "Semaine " + str(triplet[0]) + " " + convertDay[triplet[1]-1] + " " + slot.toString()
@@ -42,4 +44,3 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
         return x & y
         
-r = Resultat("Coucou")
