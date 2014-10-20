@@ -2,6 +2,7 @@ import GestionDatetime
 import Connexion
 import Slot
 import Filtre
+import Resultat
 from icalendar import Calendar # support des .ics
 
 class Edt:
@@ -31,7 +32,7 @@ class Edt:
 	def addGroup(self, group):
 		if group not in self.edt:
 			e = self.connexion.connect(group)
-			self.edt[group] = self.analyseEdt(e)
+			self.edt[group] = self.analyseEdt(e, group)
 
 	""" Supprime un groupe de la liste des groupes à comparer """
 	def removeGroup(self, group):
@@ -71,9 +72,8 @@ class Edt:
 				Exemple d'ordre : [Semaine 1 Lundi 8h à 9h20, Semaine 1 Lundi 9h30 à 11h, ... Semaine 1 Mardi 8h à 9h20, ..., Semaine 2 Lundi 8h à 9h20, ...]
 			Chaque case contient : 1 si le créneau est libre, 0 sinon
 	"""
-	def analyseEdt(self, edt): 
-
-		slots = [1]*self.nbSlot #At the beggining, all the slots are free
+	def analyseEdt(self, edt, nomGroup): 
+		result = Resultat.Resultat("Créneaux pour " + nomGroup)
 
 		for component in Calendar.from_ical(edt.text).walk():
 			if component.name == 'VEVENT':
@@ -87,10 +87,10 @@ class Edt:
 
 				for index, defaultSlot in Slot.defaultSlots:
 					if slot.intersect(defaultSlot): #If the slot intersect with a default slot
-						slots[isoIndex + index] = 0 #This default slot isn't free
+						result[isoIndex + index] = 0 #This default slot isn't free
 
 				        
-		return slots
+		return result
 		
 		
 		
@@ -108,41 +108,6 @@ class Edt:
 
 		return index
 		
-		
-	""" Recréé un triplet (semaine, jour, créneau) à partir de l'index du créneau dans un tableau d'emploi du temps """	
-	def indexToResult(self, index):
-		week = int(index / (self.nbDayInWeek * self.nbSlotInDay)) + self.startWeek
-		day = int((index % (self.nbDayInWeek * self.nbSlotInDay)) / self.nbSlotInDay) + 1
-		time = int((index % (self.nbDayInWeek * self.nbSlotInDay)) % self.nbSlotInDay)
-
-		return week, day, time
-		
-		
-	""" Affiche la date du créneau à partir du triplet (semaine, jour, créneau) """
-	def resultToString(self, result):
-		slot = [s for i,s in Slot.defaultSlots if i == result[2]][0]
-
-		return "Semaine " + str(result[0]) + " " + self.convertDay[result[1]-1] + " " + slot.toString()
-		
-		
-
-
-	def filtre(self, list_result):
-		return [result for result in list_result if any(filtre.isIn(result) for filtre in self.filtres.values())]
-		
-	def afficheResult(self, results):
-		results_string = map(self.resultToString, results)
-		for e in results_string:
-			print(e)
-		
-
-	def filtreEtAffiche(self, list_results):
-		results_index = [i for i,item in enumerate(list_results) if item == 1]
-		results_format = [item for item in map(self.indexToResult, results_index)]
-		results_filtre = self.filtre(results_format)
-
-		self.afficheResult(results_filtre)
-		
 
 
 	""" Compare entre eux une liste de groupes
@@ -150,21 +115,16 @@ class Edt:
 		Pour comparer plusieurs groupes, on compare les deux premiers groupes, puis le resultat de la comparaison avec le troisième groupes, etc...
 	"""
 	def compare(self, list_groups): #Oh Oh ! Work for both list and dictionnary, it seems
-		if not all(group in self.edt for group in list_groups) : #try except ?
+		if not all(group in self.edt for group in list_groups) : #try except ?va
 			print("Erreur, groupe non présent")
 			exit(1)
 
-		res = []
+		res = Resultat.Resultat("Comparaison entre :")
 
 		for group in list_groups:
-			#Hou ! Le vilain test à chaque tour de boucle pour un seul cas qui se retrouve ici maintenant !
-			#Mais j'ai pas trop trouvé comment faire autrement. Iterateur ?
-			if len(res) == 0: 
-				res = self.edt[group]
-			else:
-				res = list(map(etbit, res, self.edt[group])) #Actually, we need to convert it in list, because we test len(res) after
+			res = res.compare(self.edt[group], res.nom + " " + group)
 
-		return list(res) #Must be convert here, because we want to return a list, and not an iterators (map object)
+		return res
 
 
 	""" Compare tous les groupes qui ont été ajouté à la liste des groupes """
@@ -183,7 +143,7 @@ class Edt:
 	def compareAndPrint(self):
 		allResults = self.compareAll()
 		
-		self.filtreEtAffiche(allResults)
+		print(allResults.toString(self.filtres))
 			
 	
 	""" Compare les groupes passés en paramètres deux à deux
@@ -228,9 +188,7 @@ class Edt:
 		allResults = self.compareAllEachToEach()
 
 		for res in allResults:
-			print("Comparaison entre " + res['groupe1'] + " et " + res['groupe2'] + " :")
-			
-			self.filtreEtAffiche(res['resultat'])
+			print(group_edt.toString(self.filtres))
 
 			print("\n")
 			
@@ -238,9 +196,7 @@ class Edt:
 	def listForAllGroupsAndPrint(self):
 	
 		for group, group_edt in self.edt.items():
-			print("Créneaux pour " + group + " :")
-			
-			self.filtreEtAffiche(group_edt)
+			print(group_edt.toString(self.filtres))
 			
 			print("\n")
 
