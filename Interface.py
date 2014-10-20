@@ -121,17 +121,29 @@ class Interface:
 								
 		self.menuOption = Menu("Interface de gestion des options",
 								{
-									'addAvailableGroup' : {'fct' : lambda g,c : self.edt.addAvailableGroup(g,c), 'args' : 2, 'help' : "ajouter un groupe dans la liste des groupes disponibles",
-															'details' : 
-																"Permet d'ajouter un groupe disponible pour les analyses.\n"
-																"Nécessite un nom de groupe, et le code de sa page edt."
-															},
-									'removeAvailableGroup' : {'fct' : lambda g : self.edt.removeAvailableGroup(g), 'args' : 1, 'help' : "supprimer un groupe de la liste des groupes disponibles",
-																'details' :
-																		"Permet de supprimer un groupe disponible pour les analyses.\n"
-																		"Nécessite le nom du groupe à supprimer."
-																}
+									'groups' : {'fct' : lambda : self.menuAvailableGroup.wait(), 'args' : 0, 'help' : "gérer les groupes disponibles",
+												'details' : 
+													"Permet de gérer les groupes disponibles pour analyse"
+												}
 								}, 'Options')
+								
+		self.menuAvailableGroup = Menu("Interface des groupes disponibles",
+										{
+											'add' : {'fct' : lambda g,c : self.edt.addAvailableGroup(g,c), 'args' : 2, 'help' : "ajouter un groupe dans la liste des groupes disponibles",
+														'details' : 
+															"Permet d'ajouter un groupe disponible pour les analyses.\n"
+															"Nécessite un nom de groupe, et le code de sa page edt."
+														},
+											'remove' : {'fct' : lambda g : self.edt.removeAvailableGroup(g), 'args' : 1, 'help' : "supprimer un groupe de la liste des groupes disponibles",
+														'details' :
+																"Permet de supprimer un groupe disponible pour les analyses.\n"
+																"Nécessite le nom du groupe à supprimer."
+														},
+											'list' : {'fct' : lambda : print(self.edt.groupAvailable()), 'args' : 0, 'help' : "lister les groupes disponibles",
+														'details' :
+																"Permet de lister les groupes disponibles pour les analyses."
+														}
+											}, 'Groupes disponibles ')
 
 		self.menuInterface = Menu("Interface de l'Edt Analyser",
 								{
