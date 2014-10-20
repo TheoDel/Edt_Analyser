@@ -3,6 +3,7 @@ import Connexion
 import Slot
 import Filtre
 import Resultat
+import Option
 from icalendar import Calendar # support des .ics
 
 class Edt:
@@ -51,9 +52,7 @@ class Edt:
 			
 	""" Renvoie la liste des groupes disponibles """
 	def groupAvailable(self):
-		groups =  list(self.connexion.correspondance_group_tab.keys())
-		groups.sort()
-		return groups
+		return self.connexion.correspondance_group_tab
 		
 	""" Ajoute un nouveau groupe dans la liste des groupes disponibles """
 	def addAvailableGroup(self, group, code):
@@ -63,6 +62,11 @@ class Edt:
 	""" Supprime un groupe dans la liste des groupes disponibles """
 	def removeAvailableGroup(self, group):
 		self.connexion.removeAvailableGroup(group)
+		
+	
+	def saveAvailableGroup(self, group):
+		Option.option.saveGroup(self.connexion.correspondance_group_tab)
+		
 			
 
 	""" Analyse l'emploi du temps donné en paramètre 

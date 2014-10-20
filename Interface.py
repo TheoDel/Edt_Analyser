@@ -139,9 +139,13 @@ class Interface:
 																"Permet de supprimer un groupe disponible pour les analyses.\n"
 																"Nécessite le nom du groupe à supprimer."
 														},
-											'list' : {'fct' : lambda : print(self.edt.groupAvailable()), 'args' : 0, 'help' : "lister les groupes disponibles",
+											'list' : {'fct' : lambda : print(self.listAvailableGroup()), 'args' : 0, 'help' : "lister les groupes disponibles",
 														'details' :
 																"Permet de lister les groupes disponibles pour les analyses."
+														},
+											'save' : {'fct' : lambda : self.edt.saveAvailableGroup(), 'args' : 0, 'help' : "sauvegarder les changements effectués",
+														'details' :
+																"Sauvegarde les changements effectués sur les groupes disponibles."
 														}
 											}, 'Groupes disponibles ')
 
@@ -188,7 +192,8 @@ class Interface:
 
 
 	def infoGroups(self):
-		groupsAvailable = self.edt.groupAvailable()
+		groupsAvailable = list(self.edt.groupAvailable().keys())
+		groupsAvailable.sort()
 		groupsAdded = list(self.edt.edt.keys())
 		groupsAdded.sort()
 
@@ -196,6 +201,10 @@ class Interface:
 		print(groupsAvailable)
 		print("Groupes déjà ajoutés :")
 		print(groupsAdded)
+		
+	def listAvailableGroup(self):
+		for group,code in self.edt.groupAvailable().items():
+			print(group + " : " + code)
 
 	def infoFiltre(self):
 		for k,v in self.edt.filtres.items():
