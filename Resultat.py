@@ -3,9 +3,9 @@ import Slot
 
 class Resultat:
 	
-	def __init__(self, nom, taille):
+	def __init__(self, nom):
 		self.nom = nom
-		self.result = [1]*taille #At the beggining, all the slots are free
+		self.result = [1]*(Option.option.nbWeek*Option.option.nbDayInWeek*Option.option.nbSlotInDay) #At the beggining, all the slots are free
 		
 	def compare(self, other_result, nomComparaison):
 		return Resultat(nomComparaison, list(map(etbit, self.result, other_result)))
@@ -42,3 +42,4 @@ def etbit(x, y): # comparaison logique d'indices de deux horaires
         # identique de deux groupes différents
         return x & y
         
+r = Resultat("Coucou")
