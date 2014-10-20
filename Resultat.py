@@ -17,7 +17,10 @@ class Resultat:
 			self.result[key] = value
 		
 	def compare(self, other_result, nomComparaison):
-		return Resultat(nomComparaison, list(map(etbit, self.result, other_result)))
+		res = Resultat(nomComparaison)
+		res.result = list(map(etbit, self.result, other_result))
+		
+		return res
 
 	def toString(self):
 		res = self.nom + "\n\n"
