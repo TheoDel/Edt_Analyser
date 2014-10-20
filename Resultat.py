@@ -1,4 +1,5 @@
 import Option
+import Filtre
 import Slot
 
 class Resultat:
@@ -22,12 +23,13 @@ class Resultat:
 		
 		return res
 
-	def toString(self):
+	def toString(self, filtres):
 		res = self.nom + "\n\n"
 		
 		indexLibre = [i for i,item in enumerate(self.result) if item == 1]
-		tripletLibre = map(indexToTriplet, indexLibre)
-		allStr = map(tripletToString, tripletLibre)
+		tripletLibre = list(map(indexToTriplet, indexLibre))
+		tripletFiltre = [triplet for triplet in tripletLibre if any(filtre.isIn(triplet) for filtre in filtres.values())]
+		allStr = map(tripletToString, tripletFiltre)
 		
 		for tripletStr in allStr:
 			res += tripletStr + "\n"
