@@ -9,16 +9,8 @@ from icalendar import Calendar # support des .ics
 class Edt:
 
 	def __init__(self):
-		self.startWeek = 37 #Semaine de départ
-		self.endWeek = 51 #Semaine de fin
-		self.nbWeek = self.endWeek - self.startWeek + 1
-		self.nbDayInWeek = 6 #Nombre de jour par semaine
-		self.nbSlotInDay = 8 #Nombre de créneaux par jour
-
 		self.connexion = Connexion.Connexion()
 		self.edt = {}
-
-		self.nbSlot = self.nbWeek * self.nbDayInWeek * self.nbSlotInDay
 
 		self.gestionDate = GestionDatetime.GestionDatetime()
 
@@ -107,8 +99,8 @@ class Edt:
 	def getIsoIndex(self, datetime):
 		isodate = datetime.isocalendar() #tuple (years, week, day) day from 1 to 7
 
-		index = (isodate[1] - self.startWeek) * self.nbDayInWeek * self.nbSlotInDay
-		index += (isodate[2] - 1) * self.nbSlotInDay
+		index = (isodate[1] - Option.option.startWeek) * Option.option.nbDayInWeek * Option.option.nbSlotInDay
+		index += (isodate[2] - 1) * Option.option.nbSlotInDay
 
 		return index
 		
