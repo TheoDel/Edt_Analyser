@@ -64,7 +64,7 @@ class Edt:
 		self.connexion.removeAvailableGroup(group)
 		
 	
-	def saveAvailableGroup(self, group):
+	def saveAvailableGroup(self):
 		Option.option.saveGroup(self.connexion.correspondance_group_tab)
 		
 			
