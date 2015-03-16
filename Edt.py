@@ -69,7 +69,7 @@ class Edt:
 			Chaque case contient : 1 si le créneau est libre, 0 sinon
 	"""
 	def analyseEdt(self, edt, nomGroup): 
-		result = Resultat.Resultat("Créneaux pour " + nomGroup)
+		result = Resultat.Resultat("Créneaux pour " + nomGroup, nomGroup)
 
 		for component in Calendar.from_ical(edt.text).walk():
 			if component.name == 'VEVENT':
@@ -115,7 +115,7 @@ class Edt:
 			print("Erreur, groupe non présent")
 			exit(1)
 
-		res = Resultat.Resultat("Comparaison entre :")
+		res = Resultat.Resultat("Comparaison entre :","null")
 
 		for group in list_groups:
 			res = res.compare(self.edt[group], res.nom + " " + group)
@@ -197,9 +197,50 @@ class Edt:
 			print("\n")
 
 
+	""" Fait la liste des groupes disponibles pour chaque créneau"""
+	def listAllGroupsMerged(self, numsemaine):
+		resultWeek = [""]*(Option.option.nbDayInWeek*Option.option.nbSlotInDay)
+		print("Analyse en cours...")
+	
+		#Note tous les creneaux disponibles pour chaque groupe dans un tableau
+		for group, group_edt in self.edt.items():
+			
+			indexLibre = [i for i,item in enumerate(group_edt) if item == 1]
+			tripletLibre = list(map(Resultat.indexToTriplet, indexLibre))
+			tripletFiltre = [triplet for triplet in tripletLibre if any(filtre.isIn(triplet) for filtre in self.filtres.values())]
 
+			for tripletStr in tripletFiltre:
+				resultWeek[(tripletStr[1]-1)*Option.option.nbSlotInDay+tripletStr[2]-1] += group_edt.nompropre+", "
+			
+			print("analyse en cours...")
+		
+		
+		
+		#Transforme le tableau en String au format csv
+		convertDay = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]	
 
-
+		res = ";9h30;11h;12h30;14h;15h30;17h;18h30\n"+convertDay[0]+";" #Heures fixées en brut...
+		col=0
+		lign=0
+		for creneau in resultWeek:
+			res += creneau
+			
+			if col==(Option.option.nbSlotInDay -1) :
+				col=0
+				lign+=1
+				res += "\n" + convertDay[lign]+ ";"
+			else :
+				col+=1
+				res += ";"
+				
+		print(res)
+		
+		#Enregistre dans un fichier
+		f = open("sem"+str(numsemaine)+".csv", 'w')
+		f.write(res)
+		f.close()
+		
+		print("\nTerminé !")
 
 """ Effectue un et binaire entre deux bit """
 def etbit(x, y): # comparaison logique d'indices de deux horaires

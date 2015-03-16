@@ -1,5 +1,6 @@
 import Edt
 import Filtre
+import csv
 
 class Menu:
 	def __init__(self, titre, commands, racc):
@@ -149,7 +150,7 @@ class Interface:
 														}
 											}, 'Groupes disponibles ')
 
-		self.menuInterface = Menu("Interface de l'Edt Analyser",
+		self.menuInterface = Menu("Interface de l'Edt Analyser - taper h pour le menu d'aide",
 								{
 									'filtre' : {'fct' : lambda : self.menuFiltre.wait(), 'args' : 0, 'help' : "gérer les filtres",
 												'details' :
@@ -183,6 +184,12 @@ class Interface:
 															"Affiche les créneaux de chaque groupe un à un.\n"
 															"Ne prend aucun argument.\n\n"
 															"Appelle la fonction listForAllGroupsAndPrint() et affiche les créneaux libres de chaque groupe."
+												},
+									'autodispo' : {'fct' : lambda s : self.dispo(s), 'args' : 1, 'help' : "paramètrer et afficher tout seul le tableau de disponibilités des groupes de la semaine donnée.",
+														'details' :
+															"Génère le tableau des disponibilités de tous les groupes de la semaine voulue.\n"
+															"Prend un argument : le numéro de la semaine à analyser.\n\n"
+															"Appelle la fonction dispo() et affiche les créneaux libres de chaque groupe."
 												}
 								}, '')
 
@@ -219,6 +226,29 @@ class Interface:
 		self.edt.addFiltre(name, filtre)
 
 		print(self.edt.filtres)
+		
+	""" Paramètre et affiche seul le tableau de disponibilités des groupes de la semaine donnée. """
+	def dispo(self, num_semaine):
+	
+		#Ajout de tous les groupes
+		group_dict = {}
+		
+		with open("group.data") as csvfile:
+			reader = csv.reader(csvfile, delimiter=' ')
+		
+			for row in reader:
+				group_dict[row[0]] = row[0]
+				
+		csvfile.close()
+		
+		for group in group_dict :
+			self.edt.addGroup(group)
+		
+		#Filtre : seulement les jours de la semaine sélectionnée. Le créneau de 8h-9h30 n'est réalistement pas sélectionné.
+		self.addFiltre("s"+str(num_semaine),num_semaine,"1,2,3,4,5","0,1,2,3,4,5,6,7") 
+		
+		#Traite et crée le tableau de toutes les disponibilités sur la semaine
+		self.edt.listAllGroupsMerged(num_semaine)
 		
 
 try:		

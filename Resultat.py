@@ -4,8 +4,9 @@ import Slot
 
 class Resultat:
 	
-	def __init__(self, nom):
+	def __init__(self, nom, nompropre):
 		self.nom = nom
+		self.nompropre = nompropre
 		self.result = [1]*(Option.option.nbWeek*Option.option.nbDayInWeek*Option.option.nbSlotInDay) #At the beggining, all the slots are free
 		
 	def __getitem__(self, key):
